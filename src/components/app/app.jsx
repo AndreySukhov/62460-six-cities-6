@@ -6,9 +6,9 @@ import Footer from "../Footer/footer";
 
 import MainPage from "../main-page/main-page";
 import FavoritesPage from "../favorites-page/favorites-page";
-import PlaceCard from "../place-card/place-card";
+import RoomPage from "../room-page/room-page";
 import SignInPage from "../sign-in-page/sign-in-page";
-import NotFound from "../not-found/not-found";
+import NotFoundPage from "../not-found-page/not-found-page";
 
 const App = () => {
   return (
@@ -26,10 +26,10 @@ const App = () => {
             <FavoritesPage />
           </Route>
           <Route path="/offer/:id" exact>
-            <PlaceCard />
+            <RoomPage />
           </Route>
           <Route>
-            <NotFound />
+            <NotFoundPage />
           </Route>
         </Switch>
         <Footer />

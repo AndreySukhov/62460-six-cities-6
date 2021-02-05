@@ -1,6 +1,6 @@
 import React from 'react';
 
-const NotFound = () => {
+const NotFoundPage = () => {
   return (
     <div style={{padding: `20px`, textAlign: `center`}}>
       <iframe
@@ -17,4 +17,4 @@ const NotFound = () => {
   );
 };
 
-export default NotFound;
+export default NotFoundPage;
