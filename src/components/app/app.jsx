@@ -10,6 +10,9 @@ import RoomPage from "../room-page/room-page";
 import SignInPage from "../sign-in-page/sign-in-page";
 import NotFoundPage from "../not-found-page/not-found-page";
 
+import OFFER_DATA from '../../mocks/offers';
+import FAVORITES from '../../mocks/favorites';
+
 const App = () => {
   return (
     <BrowserRouter>
@@ -17,13 +20,13 @@ const App = () => {
         <Header />
         <Switch>
           <Route path="/" exact>
-            <MainPage offersNum={312} />
+            <MainPage offersNum={312} offers={OFFER_DATA} />
           </Route>
           <Route path="/login" exact>
             <SignInPage />
           </Route>
           <Route path="/favorites" exact>
-            <FavoritesPage />
+            <FavoritesPage favorites={FAVORITES} />
           </Route>
           <Route path="/offer/:id" exact>
             <RoomPage />

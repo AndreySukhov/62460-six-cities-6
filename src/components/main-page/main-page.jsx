@@ -1,9 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import PlaceCard from "../place-card/place-card";
+import OffersList from '../offers-list/offers-list';
 
-const MainPage = ({offersNum}) => {
+import {hotelShape} from '../../propTypes/hotel';
+
+const MainPage = ({offersNum, offers}) => {
   return (
     <main className="page__main page__main--index">
       <h1 className="visually-hidden">Cities</h1>
@@ -64,11 +66,7 @@ const MainPage = ({offersNum}) => {
               </ul>
             </form>
             <div className="cities__places-list places__list tabs__content">
-              {[...Array(10).keys()].map((item) => {
-                return (
-                  <PlaceCard key={item} />
-                );
-              })}
+              <OffersList offers={offers} />
             </div>
           </section>
           <div className="cities__right-section">
@@ -81,7 +79,10 @@ const MainPage = ({offersNum}) => {
 };
 
 MainPage.propTypes = {
-  offersNum: PropTypes.number
+  offersNum: PropTypes.number,
+  offers: PropTypes.arrayOf(PropTypes.shape({
+    hotelShape
+  }))
 };
 
 export default MainPage;
