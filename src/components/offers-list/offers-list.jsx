@@ -5,6 +5,7 @@ import PlaceCard from '../place-card/place-card';
 import {hotelShape} from '../../propTypes/hotel';
 
 const OffersList = ({offers}) => {
+  // eslint-disable-next-line no-unused-vars
   const [activeCardId, setActiveCardId] = useState(null);
   return (
     <>

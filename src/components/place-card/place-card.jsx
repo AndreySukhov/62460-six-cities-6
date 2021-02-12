@@ -6,7 +6,9 @@ import {hotelShape} from '../../propTypes/hotel';
 
 const PlaceCard = ({
   id,
+  // eslint-disable-next-line camelcase
   is_premium,
+  // eslint-disable-next-line camelcase
   preview_image,
   rating,
   price,
@@ -20,6 +22,7 @@ const PlaceCard = ({
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       className="cities__place-card place-card">
+      {/* eslint-disable-next-line camelcase */}
       {is_premium && (
         <div className="place-card__mark">
           <span>Premium</span>
@@ -27,6 +30,7 @@ const PlaceCard = ({
       )}
       <div className="cities__image-wrapper place-card__image-wrapper">
         <Link to={`/offer/${id}`}>
+          {/* eslint-disable-next-line camelcase */}
           <img className="place-card__image" src={preview_image} width="260" height="200" alt="Place image" />
         </Link>
       </div>

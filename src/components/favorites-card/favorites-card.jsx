@@ -7,7 +7,9 @@ import {hotelShape} from '../../propTypes/hotel';
 
 const FavoritesCard = ({
   id,
+  // eslint-disable-next-line camelcase
   preview_image,
+  // eslint-disable-next-line camelcase
   is_favorite,
   rating,
   price,
@@ -20,6 +22,7 @@ const FavoritesCard = ({
         <Link to={`/offer/${id}`}>
           <img
             className="place-card__image"
+            // eslint-disable-next-line camelcase
             src={preview_image}
             width="150"
             height="110"
@@ -39,6 +42,7 @@ const FavoritesCard = ({
             <svg className="place-card__bookmark-icon" width="18" height="19">
               <use xlinkHref={`#icon-bookmark`} />
             </svg>
+            {/* eslint-disable-next-line camelcase */}
             {is_favorite && (
               <span className="visually-hidden">In bookmarks</span>
             )}
