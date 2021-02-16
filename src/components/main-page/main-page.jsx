@@ -2,8 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import OffersList from '../offers-list/offers-list';
+import Map from '../map/map';
 
 import {hotelShape} from '../../propTypes/hotel';
+
+import POINTS from "../../mocks/map-points";
 
 const MainPage = ({offersNum, offers}) => {
   return (
@@ -70,7 +73,7 @@ const MainPage = ({offersNum, offers}) => {
             </div>
           </section>
           <div className="cities__right-section">
-            <section className="cities__map map" />
+            <Map points={POINTS} />
           </div>
         </div>
       </div>

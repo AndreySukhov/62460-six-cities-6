@@ -39,6 +39,7 @@ const hotelShape = PropTypes.shape({
   type: PropTypes.string,
 });
 
+
 export {
   hotelShape
 };
