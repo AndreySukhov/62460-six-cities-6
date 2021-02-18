@@ -7,6 +7,7 @@ import ReviewsList from "../reviews-list/reviews-list";
 
 import REVIEWS_LIST from "../../mocks/reviews";
 import POINTS_ROOM_PAGE from "../../mocks/map-page-points";
+import OFFER_DATA from "../../mocks/offers";
 
 const RoomPage = () => {
   return (
@@ -144,9 +145,12 @@ const RoomPage = () => {
         <section className="near-places places">
           <h2 className="near-places__title">Other places in the neighbourhood</h2>
           <div className="near-places__list places__list">
-            {[...Array(3).keys()].map((item, i) => {
+            {OFFER_DATA.map((offer, i) => {
+              if (i > 2) {
+                return null;
+              }
               return (
-                <PlaceCard key={item} id={i} />
+                <PlaceCard key={offer.id} view="near-places" {...offer} />
               );
             })}
           </div>

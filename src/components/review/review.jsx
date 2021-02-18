@@ -6,7 +6,7 @@ const getDate = (dateSting) => {
   return new Date(splitDate[0], splitDate[1] - 1, splitDate[2]);
 };
 
-const Review = ({avatar, userName, rating, text, date }) => (
+const Review = ({avatar, userName, rating, text, date}) => (
   <li className="reviews__item">
     <div className="reviews__user user">
       {avatar && (
@@ -50,4 +50,4 @@ Review.propTypes = {
   ...reviewShape
 };
 
-export default Review
+export default Review;

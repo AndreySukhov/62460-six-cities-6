@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {Link} from 'react-router-dom';
 
+import {getPlaceCardInfoClass, getPlaceCardPreviewImgParams} from './utils';
+
 import {hotelShape} from '../../propTypes/hotel';
 
 const PlaceCard = ({
@@ -10,31 +12,40 @@ const PlaceCard = ({
   is_premium,
   // eslint-disable-next-line camelcase
   preview_image,
+  // eslint-disable-next-line camelcase
+  is_favorite,
   rating,
   price,
   title,
   type,
-  onMouseEnter,
-  onMouseLeave,
+  view,
 }) => {
+  const placeCardInfoClass = getPlaceCardInfoClass(view);
+  const placeCardPreviewImgParams = getPlaceCardPreviewImgParams(view);
+
   return (
     <article
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
-      className="cities__place-card place-card">
+      className={`${view}__card place-card`}>
       {/* eslint-disable-next-line camelcase */}
       {is_premium && (
         <div className="place-card__mark">
           <span>Premium</span>
         </div>
       )}
-      <div className="cities__image-wrapper place-card__image-wrapper">
+      <div className={`${view}__image-wrapper place-card__image-wrapper`}>
         <Link to={`/offer/${id}`}>
-          {/* eslint-disable-next-line camelcase */}
-          <img className="place-card__image" src={preview_image} width="260" height="200" alt="Place image" />
+          {/* eslint-disable camelcase */}
+          <img
+            className="place-card__image"
+            src={preview_image}
+            width={placeCardPreviewImgParams.width}
+            height={placeCardPreviewImgParams.height}
+            alt="Place image"
+          />
+          {/* eslint-enable camelcase */}
         </Link>
       </div>
-      <div className="place-card__info">
+      <div className={`place-card__info ${placeCardInfoClass}`}>
         <div className="place-card__price-wrapper">
           <div className="place-card__price">
             <b className="place-card__price-value">&euro;{price}</b>
@@ -44,7 +55,8 @@ const PlaceCard = ({
             <svg className="place-card__bookmark-icon" width="18" height="19">
               <use xlinkHref="#icon-bookmark" />
             </svg>
-            <span className="visually-hidden">To bookmarks</span>
+            {/* eslint-disable-next-line camelcase */}
+            <span className="visually-hidden">{is_favorite ? `In bookmarks` : `To bookmarks`}</span>
           </button>
         </div>
         <div className="place-card__rating rating">
@@ -62,16 +74,14 @@ const PlaceCard = ({
   );
 };
 
+
 PlaceCard.defaultProps = {
-  onMouseEnter: () => {},
-  onMouseLeave: () => {},
+  view: `cities`
 };
 
 PlaceCard.propTypes = {
   ...hotelShape,
-
-  onMouseEnter: PropTypes.func,
-  onMouseLeave: PropTypes.func,
+  view: PropTypes.oneOf([`cities`, `favorites`, `near-places`])
 };
 
 export default PlaceCard;

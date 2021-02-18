@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import {hotelShape} from '../../propTypes/hotel';
 
-import FavoritesCard from '../favorites-card/favorites-card';
+import PlaceCard from "../place-card/place-card";
 
 const FavoritesPage = ({favorites}) => {
 
@@ -31,7 +31,7 @@ const FavoritesPage = ({favorites}) => {
                         <div className="favorites__places">
                           {fav.places.map((place) => {
                             return (
-                              <FavoritesCard {...place} key={place.id}/>
+                              <PlaceCard view="favorites" {...place} key={place.id}/>
                             );
                           })}
                         </div>
