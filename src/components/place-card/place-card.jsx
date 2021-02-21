@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {Link} from 'react-router-dom';
 
-import {getPlaceCardInfoClass, getPlaceCardPreviewImgParams} from './utils';
+import {getPlaceCardInfoClass, getPlaceCardPreviewImgParams, getWrapClassName} from './utils';
 
 import {hotelShape} from '../../propTypes/hotel';
 
@@ -25,7 +25,7 @@ const PlaceCard = ({
 
   return (
     <article
-      className={`${view}__card place-card`}>
+      className={`${getWrapClassName(view)} place-card`}>
       {/* eslint-disable-next-line camelcase */}
       {is_premium && (
         <div className="place-card__mark">

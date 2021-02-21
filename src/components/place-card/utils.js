@@ -13,7 +13,16 @@ const getPlaceCardInfoClass = (view) => PLACE_CARD_INFO_CLASSES[view] || PLACE_C
 
 const getPlaceCardPreviewImgParams = (view) => PLACE_CARD_PREVIEW_IMG_PARAMS[view] || PLACE_CARD_PREVIEW_IMG_PARAMS.default;
 
+const getWrapClassName = (view) => {
+  if (view === `cities`) {
+    return `${view}__place-card`;
+  }
+
+  return `${view}__card`;
+};
+
 export {
   getPlaceCardInfoClass,
-  getPlaceCardPreviewImgParams
+  getPlaceCardPreviewImgParams,
+  getWrapClassName
 };
