@@ -1,11 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {Link} from 'react-router-dom';
-import {withRouter} from 'react-router-dom';
+import {useLocation} from 'react-router-dom';
+
+import {mergeSearchWithParam} from '../../util';
 
 const CitiesList = (props) => {
 
-  const {cities, currentCity, location} = props;
+  const {cities, currentCity} = props;
+  const location = useLocation();
 
   return (
     <section className="locations container">
@@ -15,7 +18,7 @@ const CitiesList = (props) => {
             <Link
               to={{
                 pathname: location.pathname,
-                search: `?city=${city}`,
+                search: `${mergeSearchWithParam(location.search, {city})}`,
               }}
               className={`locations__item-link tabs__item
                ${city === currentCity ? `tabs__item tabs__item--active` : ``}`}>
@@ -36,4 +39,4 @@ CitiesList.propTypes = {
   cities: PropTypes.arrayOf(PropTypes.string),
 };
 
-export default withRouter(CitiesList);
+export default CitiesList;

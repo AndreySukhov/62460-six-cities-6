@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {withRouter} from 'react-router-dom';
+import {useLocation, useHistory} from 'react-router-dom';
 
 import {CITIES_LIST} from '../../store/reducer';
 import {setCity, setOffersData} from '../../store/action';
@@ -11,10 +11,12 @@ import Map from '../map/map';
 import CitiesList from '../cities-list/cities-list';
 
 const MainPage = (props) => {
-  const {currentCity, location, history, onSetCity, onSetOffersData} = props;
+  const {currentCity, onSetCity, onSetOffersData} = props;
+  const location = useLocation();
+  const history = useHistory();
   useEffect(() => {
     let newCity = null;
-    const params = new URLSearchParams(document.location.search);
+    const params = new URLSearchParams(location.search);
     const cityParam = params.get(`city`);
     if (!cityParam && CITIES_LIST[0]) {
       newCity = CITIES_LIST[0];
@@ -23,6 +25,7 @@ const MainPage = (props) => {
     } else {
       newCity = cityParam;
     }
+
     onSetCity(newCity);
     onSetOffersData(newCity);
   }, [location.search]);
@@ -97,12 +100,10 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 MainPage.propTypes = {
-  location: PropTypes.object,
-  history: PropTypes.object,
   currentCity: PropTypes.object,
 
   onSetCity: PropTypes.func,
   onSetOffersData: PropTypes.func,
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(MainPage));
+export default connect(mapStateToProps, mapDispatchToProps)(MainPage);
