@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {useLocation, useHistory} from 'react-router-dom';
@@ -6,27 +6,19 @@ import {useLocation, useHistory} from 'react-router-dom';
 import {CITIES_LIST} from '../../store/reducer';
 import {SORT_OPTIONS} from '../../util/constants';
 import {setCity, setOffersData} from '../../store/action';
-import {mergeSearchWithParam} from "../../util";
+import {mergeSearchWithParam} from '../../util';
+import {getSortLabel} from '../../util/main-page-utils';
 
 import OffersList from '../offers-list/offers-list';
 import Map from '../map/map';
 import CitiesList from '../cities-list/cities-list';
 import SortOption from '../sort-options/sort-options';
+import MainPageEmpty from '../main-page-empty/main-page-empty';
 
-const MainPage = (props) => {
-  const {currentCity, onSetCity, onSetOffersData} = props;
+const MainPage = ({currentCity, onSetCity, onSetOffersData}) => {
   const location = useLocation();
   const history = useHistory();
-
-  const getSortLabel = ({sort, direction}) => {
-    const chosenSortLabel = SORT_OPTIONS.find((option) => {
-      return option.name === sort && option.direction === direction;
-    });
-    if (chosenSortLabel) {
-      return chosenSortLabel.label;
-    }
-    return SORT_OPTIONS.find((option) => !option.name && !option.direction).label;
-  };
+  const [activeOffer, setActiveOffer] = useState(null);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -73,30 +65,21 @@ const MainPage = (props) => {
             <>
               <section className="cities__places places">
                 <h2 className="visually-hidden">Places</h2>
-                <b className="places__found">{currentCity.offers.list.length} places to stay in Amsterdam</b>
+                <b className="places__found">{currentCity.offers.list.length} places to stay in {currentCity.name}</b>
                 <SortOption
                   options={SORT_OPTIONS}
                   chosenOption={currentCity.sort}
                   onOptionChoice={onSortChange}/>
                 <div className="cities__places-list places__list tabs__content">
-                  <OffersList offers={currentCity.offers.list}/>
+                  <OffersList offers={currentCity.offers.list} setActiveOffer={setActiveOffer}/>
                 </div>
               </section>
               <div className="cities__right-section">
-                <Map points={currentCity.offers.locations}/>
+                <Map points={currentCity.offers.locations} activeMarkerId={activeOffer} />
               </div>
             </>
           ) : (
-            <>
-              <section className="cities__no-places">
-                <div className="cities__status-wrapper tabs__content">
-                  <b className="cities__status">No places to stay available</b>
-                  <p className="cities__status-description">We could not find any property available at the moment in
-                    Dusseldorf</p>
-                </div>
-              </section>
-              <div className="cities__right-section" />
-            </>
+            <MainPageEmpty city={currentCity.name} />
           )}
         </div>
       </div>

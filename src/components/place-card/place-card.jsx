@@ -19,12 +19,14 @@ const PlaceCard = ({
   title,
   type,
   view,
+  events,
 }) => {
   const placeCardInfoClass = getPlaceCardInfoClass(view);
   const placeCardPreviewImgParams = getPlaceCardPreviewImgParams(view);
 
   return (
     <article
+      {...events}
       className={`${getWrapClassName(view)} place-card`}>
       {/* eslint-disable-next-line camelcase */}
       {is_premium && (
@@ -81,6 +83,7 @@ PlaceCard.defaultProps = {
 
 PlaceCard.propTypes = {
   ...hotelShape,
+  events: PropTypes.object,
   view: PropTypes.oneOf([`cities`, `favorites`, `near-places`])
 };
 

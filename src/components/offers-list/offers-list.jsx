@@ -4,7 +4,7 @@ import PlaceCard from '../place-card/place-card';
 
 import {hotelShape} from '../../propTypes/hotel';
 
-const OffersList = ({offers}) => {
+const OffersList = ({offers, setActiveOffer}) => {
   return (
     <>
       {offers.map((offer) => {
@@ -12,6 +12,10 @@ const OffersList = ({offers}) => {
           <PlaceCard
             view="cities"
             key={offer.id}
+            events={{
+              onMouseEnter: () => setActiveOffer(offer.id),
+              onMouseLeave: () => setActiveOffer(null)
+            }}
             {...offer}
           />
         );
@@ -23,7 +27,8 @@ const OffersList = ({offers}) => {
 OffersList.propTypes = {
   offers: PropTypes.arrayOf(PropTypes.shape({
     hotelShape
-  }))
+  })),
+  setActiveOffer: PropTypes.func
 };
 
 export default OffersList;

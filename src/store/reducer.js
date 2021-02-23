@@ -36,6 +36,7 @@ const reducer = (state = defaultState, action) => {
               locations: [...acc.offers.locations, {
                 lat: curr.location.latitude,
                 lng: curr.location.longitude,
+                offerId: curr.id
               }],
               list: [...acc.offers.list, curr],
             }
