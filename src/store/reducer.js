@@ -2,10 +2,12 @@ import {CITY_CHANGE, OFFERS_LIST_SET} from './action';
 
 const CITIES_LIST = [`Paris`, `Cologne`, `Brussels`, `Amsterdam`, `Hamburg`, `Dusseldorf`];
 import OFFER_DATA from '../mocks/offers';
+import {sortManager} from "../util";
 
 const defaultState = {
   citiesList: CITIES_LIST,
   currentCity: {
+    sort: {},
     name: CITIES_LIST[0],
     offers: {
       locations: [],
@@ -28,7 +30,7 @@ const reducer = (state = defaultState, action) => {
 
     case OFFERS_LIST_SET:
       const newOffers = OFFER_DATA.reduce((acc, curr) => {
-        if (curr.city.name === payload) {
+        if (curr.city.name === payload.city) {
           return {
             offers: {
               locations: [...acc.offers.locations, {
@@ -45,11 +47,20 @@ const reducer = (state = defaultState, action) => {
           locations: [],
           list: [],
         }});
+
+      newOffers.offers.list = sortManager({
+        arr: newOffers.offers.list,
+        direction: payload.sort.direction,
+        sortParam: payload.sort.name
+      });
+
       return {
         ...state,
         currentCity: {
           ...state.currentCity,
-          ...newOffers
+          ...newOffers,
+          sort: payload.sort,
+
         }
       };
   }

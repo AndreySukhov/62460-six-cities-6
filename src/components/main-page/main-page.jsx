@@ -4,31 +4,60 @@ import {connect} from 'react-redux';
 import {useLocation, useHistory} from 'react-router-dom';
 
 import {CITIES_LIST} from '../../store/reducer';
+import {SORT_OPTIONS} from '../../util/constants';
 import {setCity, setOffersData} from '../../store/action';
+import {mergeSearchWithParam} from "../../util";
 
 import OffersList from '../offers-list/offers-list';
 import Map from '../map/map';
 import CitiesList from '../cities-list/cities-list';
+import SortOption from '../sort-options/sort-options';
 
 const MainPage = (props) => {
   const {currentCity, onSetCity, onSetOffersData} = props;
   const location = useLocation();
   const history = useHistory();
+
+  const getSortLabel = ({sort, direction}) => {
+    const chosenSortLabel = SORT_OPTIONS.find((option) => {
+      return option.name === sort && option.direction === direction;
+    });
+    if (chosenSortLabel) {
+      return chosenSortLabel.label;
+    }
+    return SORT_OPTIONS.find((option) => !option.name && !option.direction).label;
+  };
+
   useEffect(() => {
-    let newCity = null;
     const params = new URLSearchParams(location.search);
-    const cityParam = params.get(`city`);
-    if (!cityParam && CITIES_LIST[0]) {
-      newCity = CITIES_LIST[0];
+    const searchQuery = {
+      city: params.get(`city`),
+      sort: params.get(`sort`),
+      direction: params.get(`direction`),
+    };
+
+    const city = searchQuery.city || CITIES_LIST[0];
+    const sort = searchQuery.sort;
+    const direction = searchQuery.direction;
+    if (!searchQuery.city) {
       params.append(`city`, CITIES_LIST[0]);
       history.push({search: params.toString()});
-    } else {
-      newCity = cityParam;
     }
-
-    onSetCity(newCity);
-    onSetOffersData(newCity);
+    onSetCity(city);
+    onSetOffersData({city, sort: {
+      name: sort,
+      direction,
+      label: getSortLabel({sort, direction})}
+    });
   }, [location.search]);
+
+  const onSortChange = (param) => {
+    const params = new URLSearchParams(location.search);
+    history.push({search: mergeSearchWithParam(params, {
+      sort: param.name, direction: param.direction,
+    })
+    });
+  };
 
   const hasOffers = currentCity.offers.list.length && currentCity.offers.locations.length;
 
@@ -45,21 +74,10 @@ const MainPage = (props) => {
               <section className="cities__places places">
                 <h2 className="visually-hidden">Places</h2>
                 <b className="places__found">{currentCity.offers.list.length} places to stay in Amsterdam</b>
-                <form className="places__sorting" action="#" method="get">
-                  <span className="places__sorting-caption">Sort by</span>
-                  <span className="places__sorting-type" tabIndex="0">
-                  Popular
-                    <svg className="places__sorting-arrow" width="7" height="4">
-                      <use xlinkHref={`#icon-arrow-select`}/>
-                    </svg>
-                  </span>
-                  <ul className="places__options places__options--custom places__options--opened">
-                    <li className="places__option places__option--active" tabIndex="0">Popular</li>
-                    <li className="places__option" tabIndex="0">Price: low to high</li>
-                    <li className="places__option" tabIndex="0">Price: high to low</li>
-                    <li className="places__option" tabIndex="0">Top rated first</li>
-                  </ul>
-                </form>
+                <SortOption
+                  options={SORT_OPTIONS}
+                  chosenOption={currentCity.sort}
+                  onOptionChoice={onSortChange}/>
                 <div className="cities__places-list places__list tabs__content">
                   <OffersList offers={currentCity.offers.list}/>
                 </div>

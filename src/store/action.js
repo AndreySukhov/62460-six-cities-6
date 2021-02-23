@@ -7,9 +7,9 @@ const setCity = (city) => ({
   payload: city,
 });
 
-const setOffersData = (city) => ({
+const setOffersData = (params) => ({
   type: OFFERS_LIST_SET,
-  payload: city,
+  payload: params,
 });
 
 
