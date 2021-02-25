@@ -1,11 +1,17 @@
-import {CITY_CHANGE, OFFERS_LIST_SET} from './action';
+import {CITY_CHANGE,
+  OFFERS_LIST_SET,
+  OFFERS_LIST_FETCH_START,
+  OFFERS_LIST_FETCH_SUCCESS,
+} from './action';
 
 const CITIES_LIST = [`Paris`, `Cologne`, `Brussels`, `Amsterdam`, `Hamburg`, `Dusseldorf`];
-import OFFER_DATA from '../mocks/offers';
 import {sortManager} from "../util";
 
 const defaultState = {
-  citiesList: CITIES_LIST,
+  offersList: {
+    cities: [],
+    pending: true,
+  },
   currentCity: {
     sort: {},
     name: CITIES_LIST[0],
@@ -27,9 +33,24 @@ const reducer = (state = defaultState, action) => {
           name: payload
         }
       };
-
+    case OFFERS_LIST_FETCH_START:
+      return {
+        ...state,
+        offersList: {
+          cities: [],
+          pending: true,
+        }
+      };
+    case OFFERS_LIST_FETCH_SUCCESS:
+      return {
+        ...state,
+        offersList: {
+          cities: payload,
+          pending: false,
+        }
+      };
     case OFFERS_LIST_SET:
-      const newOffers = OFFER_DATA.reduce((acc, curr) => {
+      const newOffers = state.offersList.cities.reduce((acc, curr) => {
         if (curr.city.name === payload.city) {
           return {
             offers: {
@@ -61,7 +82,6 @@ const reducer = (state = defaultState, action) => {
           ...state.currentCity,
           ...newOffers,
           sort: payload.sort,
-
         }
       };
   }
