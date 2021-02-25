@@ -1,91 +1,110 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
+import {useLocation, useHistory} from 'react-router-dom';
+
+import {CITIES_LIST} from '../../store/reducer';
+import {SORT_OPTIONS} from '../../util/constants';
+import {setCity, setOffersData} from '../../store/action';
+import {mergeSearchWithParam} from '../../util';
+import {getSortLabel} from '../../util/main-page-utils';
 
 import OffersList from '../offers-list/offers-list';
 import Map from '../map/map';
+import CitiesList from '../cities-list/cities-list';
+import SortOption from '../sort-options/sort-options';
+import MainPageEmpty from '../main-page-empty/main-page-empty';
 
-import {hotelShape} from '../../propTypes/hotel';
+const MainPage = ({currentCity, onSetCity, onSetOffersData}) => {
+  const location = useLocation();
+  const history = useHistory();
+  const [activeOffer, setActiveOffer] = useState(null);
 
-import POINTS from "../../mocks/map-points";
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const searchQuery = {
+      city: params.get(`city`),
+      sort: params.get(`sort`),
+      direction: params.get(`direction`),
+    };
 
-const MainPage = ({offersNum, offers}) => {
+    const city = searchQuery.city || CITIES_LIST[0];
+    const sort = searchQuery.sort;
+    const direction = searchQuery.direction;
+    if (!searchQuery.city) {
+      params.append(`city`, CITIES_LIST[0]);
+      history.push({search: params.toString()});
+    }
+    onSetCity(city);
+    onSetOffersData({city, sort: {
+      name: sort,
+      direction,
+      label: getSortLabel({sort, direction})}
+    });
+  }, [location.search]);
+
+  const onSortChange = (param) => {
+    const params = new URLSearchParams(location.search);
+    history.push({search: mergeSearchWithParam(params, {
+      sort: param.name, direction: param.direction,
+    })
+    });
+  };
+
+  const hasOffers = currentCity.offers.list.length && currentCity.offers.locations.length;
+
   return (
     <main className="page__main page__main--index">
       <h1 className="visually-hidden">Cities</h1>
       <div className="tabs">
-        <section className="locations container">
-          <ul className="locations__list tabs__list">
-            <li className="locations__item">
-              <a className="locations__item-link tabs__item" href="#">
-                <span>Paris</span>
-              </a>
-            </li>
-            <li className="locations__item">
-              <a className="locations__item-link tabs__item" href="#">
-                <span>Cologne</span>
-              </a>
-            </li>
-            <li className="locations__item">
-              <a className="locations__item-link tabs__item" href="#">
-                <span>Brussels</span>
-              </a>
-            </li>
-            <li className="locations__item">
-              <a className="locations__item-link tabs__item tabs__item--active">
-                <span>Amsterdam</span>
-              </a>
-            </li>
-            <li className="locations__item">
-              <a className="locations__item-link tabs__item" href="#">
-                <span>Hamburg</span>
-              </a>
-            </li>
-            <li className="locations__item">
-              <a className="locations__item-link tabs__item" href="#">
-                <span>Dusseldorf</span>
-              </a>
-            </li>
-          </ul>
-        </section>
+        <CitiesList cities={CITIES_LIST} currentCity={currentCity.name}/>
       </div>
       <div className="cities">
-        <div className="cities__places-container container">
-          <section className="cities__places places">
-            <h2 className="visually-hidden">Places</h2>
-            <b className="places__found">{offersNum} places to stay in Amsterdam</b>
-            <form className="places__sorting" action="#" method="get">
-              <span className="places__sorting-caption">Sort by</span>
-              <span className="places__sorting-type" tabIndex="0">
-                  Popular
-                <svg className="places__sorting-arrow" width="7" height="4">
-                  <use xlinkHref={`#icon-arrow-select`} />
-                </svg>
-              </span>
-              <ul className="places__options places__options--custom places__options--opened">
-                <li className="places__option places__option--active" tabIndex="0">Popular</li>
-                <li className="places__option" tabIndex="0">Price: low to high</li>
-                <li className="places__option" tabIndex="0">Price: high to low</li>
-                <li className="places__option" tabIndex="0">Top rated first</li>
-              </ul>
-            </form>
-            <div className="cities__places-list places__list tabs__content">
-              <OffersList offers={offers} />
-            </div>
-          </section>
-          <div className="cities__right-section">
-            <Map points={POINTS} />
-          </div>
+        <div className={`cities__places-container container ${hasOffers ? `` : `cities__places-container--empty`}`}>
+          {hasOffers ? (
+            <>
+              <section className="cities__places places">
+                <h2 className="visually-hidden">Places</h2>
+                <b className="places__found">{currentCity.offers.list.length} places to stay in {currentCity.name}</b>
+                <SortOption
+                  options={SORT_OPTIONS}
+                  chosenOption={currentCity.sort}
+                  onOptionChoice={onSortChange}/>
+                <div className="cities__places-list places__list tabs__content">
+                  <OffersList offers={currentCity.offers.list} setActiveOffer={setActiveOffer}/>
+                </div>
+              </section>
+              <div className="cities__right-section">
+                <Map points={currentCity.offers.locations} activeMarkerId={activeOffer} />
+              </div>
+            </>
+          ) : (
+            <MainPageEmpty city={currentCity.name} />
+          )}
         </div>
       </div>
     </main>
   );
 };
 
+const mapStateToProps = ({currentCity}) => ({
+  currentCity,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  onSetCity(city) {
+    dispatch(setCity(city));
+  },
+  onSetOffersData(city) {
+    dispatch(setOffersData(city));
+  },
+});
+
 MainPage.propTypes = {
-  offersNum: PropTypes.number,
-  offers: PropTypes.arrayOf(PropTypes.shape({
-    hotelShape
-  }))
+  currentCity: PropTypes.object,
+
+  onSetCity: PropTypes.func,
+  onSetOffersData: PropTypes.func,
 };
 
-export default MainPage;
+export default connect(mapStateToProps, mapDispatchToProps)(MainPage);

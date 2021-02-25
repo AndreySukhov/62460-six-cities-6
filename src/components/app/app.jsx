@@ -10,7 +10,6 @@ import RoomPage from "../room-page/room-page";
 import SignInPage from "../sign-in-page/sign-in-page";
 import NotFoundPage from "../not-found-page/not-found-page";
 
-import OFFER_DATA from '../../mocks/offers';
 import FAVORITES from '../../mocks/favorites';
 
 const App = () => {
@@ -20,7 +19,7 @@ const App = () => {
         <Header />
         <Switch>
           <Route path="/" exact>
-            <MainPage offersNum={312} offers={OFFER_DATA} />
+            <MainPage />
           </Route>
           <Route path="/login" exact>
             <SignInPage />
