@@ -2,12 +2,21 @@ import {CITY_CHANGE,
   OFFERS_LIST_SET,
   OFFERS_LIST_FETCH_START,
   OFFERS_LIST_FETCH_SUCCESS,
+  AUTHENTICATION_STATUS_FETCH_START,
+  AUTHENTICATION_STATUS_FETCH_SUCCESS,
+  AUTHENTICATION_POST_START,
+  AUTHENTICATION_POST_SUCCESS,
+  AUTHENTICATION_POST_ERROR,
 } from './action';
 
 const CITIES_LIST = [`Paris`, `Cologne`, `Brussels`, `Amsterdam`, `Hamburg`, `Dusseldorf`];
 import {sortManager} from "../util";
 
 const defaultState = {
+  isAuthenticated: false,
+  loginState: {
+    pending: false,
+  },
   offersList: {
     cities: [],
     pending: true,
@@ -25,6 +34,34 @@ const defaultState = {
 const reducer = (state = defaultState, action) => {
   const {type, payload} = action;
   switch (type) {
+    case AUTHENTICATION_STATUS_FETCH_START:
+    case AUTHENTICATION_STATUS_FETCH_SUCCESS:
+      return {
+        ...state,
+        isAuthenticated: payload
+      };
+    case AUTHENTICATION_POST_START:
+      return {
+        ...state,
+        loginState: {
+          pending: true,
+        },
+      };
+    case AUTHENTICATION_POST_ERROR:
+      return {
+        ...state,
+        loginState: {
+          pending: false
+        },
+      };
+    case AUTHENTICATION_POST_SUCCESS:
+      return {
+        ...state,
+        isAuthenticated: true,
+        loginState: {
+          pending: false
+        },
+      };
     case CITY_CHANGE:
       return {
         ...state,

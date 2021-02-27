@@ -30,9 +30,7 @@ const MainPage = ({
   const [activeOffer, setActiveOffer] = useState(null);
 
   useEffect(() => {
-    if (!offersList.cities.length) {
-      onFetchOffers();
-    }
+    onFetchOffers();
   }, []);
 
   useEffect(() => {

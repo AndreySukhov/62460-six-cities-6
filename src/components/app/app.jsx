@@ -6,6 +6,7 @@ import Footer from "../Footer/footer";
 
 import MainPage from "../main-page/main-page";
 import FavoritesPage from "../favorites-page/favorites-page";
+import PrivateRoute from "../private-route/private-route";
 import RoomPage from "../room-page/room-page";
 import SignInPage from "../sign-in-page/sign-in-page";
 import NotFoundPage from "../not-found-page/not-found-page";
@@ -24,9 +25,12 @@ const App = () => {
           <Route path="/login" exact>
             <SignInPage />
           </Route>
-          <Route path="/favorites" exact>
+          <PrivateRoute
+            path="/favorites"
+            exact
+          >
             <FavoritesPage favorites={FAVORITES} />
-          </Route>
+          </PrivateRoute>
           <Route path="/offer/:id" exact>
             <RoomPage />
           </Route>
