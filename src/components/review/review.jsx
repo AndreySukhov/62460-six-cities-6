@@ -2,24 +2,23 @@ import React from 'react';
 import reviewShape from "../../propTypes/review";
 
 const getDate = (dateSting) => {
-  const splitDate = dateSting.split(`-`);
-  return new Date(splitDate[0], splitDate[1] - 1, splitDate[2]);
+  return new Date(dateSting);
 };
 
-const Review = ({avatar, userName, rating, text, date}) => (
+const Review = ({user, rating, comment, date}) => (
   <li className="reviews__item">
     <div className="reviews__user user">
-      {avatar && (
+      {user.avatar_url && (
         <div className="reviews__avatar-wrapper user__avatar-wrapper">
           <img
             className="reviews__avatar user__avatar"
-            src={avatar} width="54" height="54"
+            src={user.avatar_url} width="54" height="54"
             alt="Reviews avatar" />
         </div>
       )}
-      {userName && (
+      {user.name && (
         <span className="reviews__user-name">
-          {userName}
+          {user.name}
         </span>
       )}
     </div>
@@ -32,9 +31,9 @@ const Review = ({avatar, userName, rating, text, date}) => (
           </div>
         </div>
       )}
-      {text && (
+      {comment && (
         <p className="reviews__text">
-          {text}
+          {comment}
         </p>
       )}
       {date && (

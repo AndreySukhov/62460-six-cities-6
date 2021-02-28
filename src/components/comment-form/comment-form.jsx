@@ -1,9 +1,18 @@
 import React, {useState, useMemo, Fragment} from 'react';
 import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
 
-const CommentForm = ({ratingOptionsLength}) => {
+import {sendReview} from "../../store/action";
+
+const CommentForm = ({
+  ratingOptionsLength,
+  commentLength,
+  hotelId,
+  reviewForm,
+  onSendReview
+}) => {
   const [rating, setRating] = useState(null);
-  const [reviewText, setReviewText] = useState(``);
+  const [comment, setComment] = useState(``);
 
   const ratingOptions = useMemo(() => {
     return [...Array(ratingOptionsLength).keys()].reverse().map((i) => i + 1);
@@ -11,8 +20,9 @@ const CommentForm = ({ratingOptionsLength}) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    onSendReview({params: {comment, rating}, id: hotelId});
     setRating(null);
-    setReviewText(``);
+    setComment(``);
   };
 
   return (
@@ -26,6 +36,7 @@ const CommentForm = ({ratingOptionsLength}) => {
                 className="form__rating-input visually-hidden"
                 name="rating"
                 checked={rating === index}
+                disabled={reviewForm.pending}
                 value={index}
                 id={`${index}-stars`}
                 type="radio"
@@ -43,8 +54,9 @@ const CommentForm = ({ratingOptionsLength}) => {
         })}
       </div>
       <textarea
-        value={reviewText}
-        onChange={(e) => setReviewText(e.target.value)}
+        value={comment}
+        onChange={(e) => setComment(e.target.value)}
+        disabled={reviewForm.pending}
         className="reviews__textarea form__textarea"
         id="review"
         name="review"
@@ -54,7 +66,16 @@ const CommentForm = ({ratingOptionsLength}) => {
           To submit review please make sure to set <span className="reviews__star">rating</span> and describe
           your stay with at least <b className="reviews__text-amount">50 characters</b>.
         </p>
-        <button className="reviews__submit form__submit button" type="submit" >Submit</button>
+        <button
+          disabled={
+            comment.trim().length < commentLength.min ||
+            comment.trim().length < commentLength.max ||
+            reviewForm.pending
+          }
+          className="reviews__submit form__submit button"
+          type="submit">
+          Submit
+        </button>
       </div>
     </form>
   );
@@ -62,10 +83,36 @@ const CommentForm = ({ratingOptionsLength}) => {
 
 CommentForm.defaultProps = {
   ratingOptionsLength: 5,
+  commentLength: {
+    max: 300,
+    min: 50,
+  },
 };
 
 CommentForm.propTypes = {
-  ratingOptionsLength: PropTypes.number
+  ratingOptionsLength: PropTypes.number,
+  hotelId: PropTypes.number,
+
+  onSendReview: PropTypes.func,
+
+  reviewForm: PropTypes.shape({
+    pending: PropTypes.bool,
+  }),
+
+  commentLength: PropTypes.shape({
+    max: PropTypes.number,
+    min: PropTypes.number,
+  })
 };
 
-export default CommentForm;
+const mapStateToProps = ({reviewForm}) => ({
+  reviewForm
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  onSendReview({params, id}) {
+    dispatch(sendReview({params, id}));
+  },
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(CommentForm);

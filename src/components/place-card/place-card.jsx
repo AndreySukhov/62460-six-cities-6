@@ -53,7 +53,10 @@ const PlaceCard = ({
             <b className="place-card__price-value">&euro;{price}</b>
             <span className="place-card__price-text">&#47;&nbsp;night</span>
           </div>
-          <button className="place-card__bookmark-button button" type="button">
+          <button
+            // eslint-disable-next-line camelcase
+            className={`place-card__bookmark-button ${is_favorite ? `place-card__bookmark-button--active` : ``} button`}
+            type="button">
             <svg className="place-card__bookmark-icon" width="18" height="19">
               <use xlinkHref="#icon-bookmark" />
             </svg>

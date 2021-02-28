@@ -1,12 +1,29 @@
-import {CITY_CHANGE,
+import {
+  CITY_CHANGE,
+
   OFFERS_LIST_SET,
   OFFERS_LIST_FETCH_START,
   OFFERS_LIST_FETCH_SUCCESS,
+
   AUTHENTICATION_STATUS_FETCH_START,
   AUTHENTICATION_STATUS_FETCH_SUCCESS,
+
   AUTHENTICATION_POST_START,
   AUTHENTICATION_POST_SUCCESS,
   AUTHENTICATION_POST_ERROR,
+
+  OFFER_DETAILS_FETCH_START,
+  OFFER_DETAILS_FETCH_SUCCESS,
+  OFFER_DETAILS_FETCH_ERROR,
+
+  OFFER_DETAILS_NEARBY_FETCH_START,
+  OFFER_DETAILS_NEARBY_FETCH_SUCCESS,
+
+  REVIEW_POST_START,
+  REVIEW_POST_SUCCESS,
+
+  OFFER_REVIEWS_FETCH_START,
+  OFFER_REVIEWS_FETCH_SUCCESS,
 } from './action';
 
 const CITIES_LIST = [`Paris`, `Cologne`, `Brussels`, `Amsterdam`, `Hamburg`, `Dusseldorf`];
@@ -16,6 +33,18 @@ const defaultState = {
   isAuthenticated: false,
   loginState: {
     pending: false,
+  },
+  currentOffer: {
+    pending: true,
+    data: null,
+  },
+  reviewForm: {
+    pending: false,
+  },
+  currentOfferReviews: [],
+  currentOfferNearby: {
+    list: [],
+    locations: []
   },
   offersList: {
     cities: [],
@@ -121,6 +150,83 @@ const reducer = (state = defaultState, action) => {
           sort: payload.sort,
         }
       };
+    case OFFER_DETAILS_FETCH_START:
+      return {
+        ...state,
+        currentOffer: {
+          ...state.currentOffer,
+          pending: true,
+          data: null
+        },
+      };
+    case OFFER_DETAILS_FETCH_SUCCESS:
+      return {
+        ...state,
+        currentOffer: {
+          ...state.currentOffer,
+          pending: false,
+          data: payload
+        },
+      };
+    case OFFER_DETAILS_FETCH_ERROR:
+      return {
+        ...state,
+        currentOffer: {
+          pending: false,
+          data: null
+        },
+      };
+    case OFFER_REVIEWS_FETCH_START:
+      return {
+        ...state,
+        currentOfferReviews: [],
+      };
+    case OFFER_REVIEWS_FETCH_SUCCESS:
+      return {
+        ...state,
+        currentOfferReviews: payload,
+      };
+    case OFFER_DETAILS_NEARBY_FETCH_START: {
+      return {
+        ...state,
+        currentOfferNearby: {
+          list: [],
+          locations: []
+        }
+      };
+    }
+    case OFFER_DETAILS_NEARBY_FETCH_SUCCESS: {
+      return {
+        ...state,
+        currentOfferNearby: {
+          list: payload,
+          locations: payload.map((offer) => {
+            return {
+              lat: offer.location.latitude,
+              lng: offer.location.longitude,
+              offerId: offer.id
+            };
+          })
+        }
+      };
+    }
+    case REVIEW_POST_START: {
+      return {
+        ...state,
+        reviewForm: {
+          pending: true,
+        },
+      };
+    }
+    case REVIEW_POST_SUCCESS: {
+      return {
+        ...state,
+        reviewForm: {
+          pending: false,
+        },
+        currentOfferReviews: payload,
+      };
+    }
   }
 
   return state;
