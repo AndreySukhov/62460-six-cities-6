@@ -1,39 +1,49 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {Route} from 'react-router-dom';
-import PropTypes from "prop-types";
+import {Route, Redirect} from 'react-router-dom';
+import PropTypes from 'prop-types';
+import Preloader from '../preloader/preloader';
 
-import NotFoundPage from '../not-found-page/not-found-page';
-
-const PrivateRoute = ({isAuthenticated, children, path, exact}) => {
+const PrivateRoute = ({authentication, children, path, exact, redirectRoute}) => {
   return (
     <Route
       path={path}
       exact={exact}
       render={() => {
-        if (isAuthenticated) {
-          return <>{children}</>;
+        if (authentication.pending) {
+          return (<Preloader />);
         }
-        return (<NotFoundPage />);
+        if (authentication.status) {
+          return (<>{children}</>);
+        }
+        return (<Redirect to={redirectRoute} />);
       }}
     />
   );
 };
 
-const mapStateToProps = ({isAuthenticated}) => ({
-  isAuthenticated,
-});
-
 PrivateRoute.propTypes = {
   path: PropTypes.string,
+  redirectRoute: PropTypes.string,
 
   exact: PropTypes.bool,
-  isAuthenticated: PropTypes.bool,
+  authentication: PropTypes.shape({
+    pending: PropTypes.bool,
+    status: PropTypes.bool,
+  }),
 
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node
   ]).isRequired
 };
+
+PrivateRoute.defaultProps = {
+  redirectRoute: `/404`
+};
+
+const mapStateToProps = ({authentication}) => ({
+  authentication,
+});
 
 export default connect(mapStateToProps, null)(PrivateRoute);

@@ -11,7 +11,7 @@ import RoomPage from "../room-page/room-page";
 import SignInPage from "../sign-in-page/sign-in-page";
 import NotFoundPage from "../not-found-page/not-found-page";
 
-import FAVORITES from '../../mocks/favorites';
+import {ROUTES} from '../../util/constants';
 
 const App = () => {
   return (
@@ -19,19 +19,20 @@ const App = () => {
       <div className="page">
         <Header />
         <Switch>
-          <Route path="/" exact>
+          <Route path={ROUTES.main} exact>
             <MainPage />
           </Route>
-          <Route path="/login" exact>
+          <Route path={ROUTES.login} exact>
             <SignInPage />
           </Route>
           <PrivateRoute
-            path="/favorites"
+            path={ROUTES.favorites}
             exact
+            redirectRoute={ROUTES.login}
           >
-            <FavoritesPage favorites={FAVORITES} />
+            <FavoritesPage />
           </PrivateRoute>
-          <Route path="/offer/:id" exact>
+          <Route path={`${ROUTES.offer}:id`} exact>
             <RoomPage />
           </Route>
           <Route>

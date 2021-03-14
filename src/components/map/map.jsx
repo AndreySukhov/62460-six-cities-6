@@ -2,30 +2,25 @@ import React, {useRef, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import L from 'leaflet';
 
+import {MAP_DATA} from '../../util/constants';
+
 import 'leaflet/dist/leaflet.css';
 
-const MAP_CENTER = [52.38333, 4.9];
-const MAP_DEFAULT_ZOOM = 12;
-const ICONS = {
-  default: `img/pin.svg`,
-  active: `img/pin-active.svg`,
-};
-
 const defaultIcon = L.icon({
-  iconUrl: ICONS.default,
+  iconUrl: MAP_DATA.ICONS.default,
   iconSize: [30, 30]
 });
 
 const activeIcon = L.icon({
-  iconUrl: ICONS.active,
+  iconUrl: MAP_DATA.ICONS.active,
   iconSize: [30, 30]
 });
 
 const Map = ({
   points,
   activeMarkerId,
-  center = MAP_CENTER,
-  zoom = MAP_DEFAULT_ZOOM,
+  center,
+  zoom,
 }) => {
   const mapRef = useRef();
   const [mapInstance, setMapInstance] = useState(null);
@@ -86,6 +81,11 @@ Map.propTypes = {
     lat: PropTypes.number,
     lng: PropTypes.number,
   }))
+};
+
+Map.defaultProps = {
+  center: MAP_DATA.CENTER,
+  zoom: MAP_DATA.DEFAULT_ZOOM,
 };
 
 export default Map;

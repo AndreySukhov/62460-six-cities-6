@@ -3,15 +3,7 @@ const PLACE_CARD_INFO_CLASSES = {
   default: ``,
 };
 
-const PLACE_CARD_PREVIEW_IMG_PARAMS = {
-  'favorites': {width: 150, height: 110},
-  'near-places': {width: 260, height: 200},
-  'default': {width: 260, height: 200},
-};
-
 const getPlaceCardInfoClass = (view) => PLACE_CARD_INFO_CLASSES[view] || PLACE_CARD_INFO_CLASSES.default;
-
-const getPlaceCardPreviewImgParams = (view) => PLACE_CARD_PREVIEW_IMG_PARAMS[view] || PLACE_CARD_PREVIEW_IMG_PARAMS.default;
 
 const getWrapClassName = (view) => {
   if (view === `cities`) {
@@ -23,6 +15,5 @@ const getWrapClassName = (view) => {
 
 export {
   getPlaceCardInfoClass,
-  getPlaceCardPreviewImgParams,
   getWrapClassName
 };

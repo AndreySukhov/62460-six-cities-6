@@ -4,22 +4,24 @@ import PropTypes from 'prop-types';
 import {useParams} from 'react-router-dom';
 
 import PlaceCard from "../place-card/place-card";
-import CommentForm from "../comment-form/comment-form";
 import Preloader from "../preloader/preloader";
 import Map from "../map/map";
+import BookmarkButton from "../bookmark-button/bookmark-button";
 import ReviewsList from "../reviews-list/reviews-list";
-import {fetchOfferDetails, fetchOfferReviews, fetchOfferDetailsNearby} from "../../store/action";
+import {ActionCreator} from "../../store/offerDetails/actions-offerDetails";
 import {hotelShape} from "../../propTypes/hotel";
 import NotFoundPage from "../not-found-page/not-found-page";
-import reviewShape from "../../propTypes/review";
+
+import {LISTS_LIMITS} from '../../util/constants';
+
 import locationShape from "../../propTypes/location";
 
 const RoomPage = ({
-  isAuthenticated,
   onFetchOfferData,
-  currentOffer: {pending, data},
-  currentOfferReviews,
-  currentOfferNearby,
+  onFavToggle,
+  maxGalleryLength,
+  offerDetails: {pending, data, favTogglePending},
+  nearby,
 }) => {
   const params = useParams();
 
@@ -51,7 +53,11 @@ const RoomPage = ({
         {data.images && data.images.length && data.images.length > 0 && (
           <div className="property__gallery-container container">
             <div className="property__gallery">
-              {data.images.map((image) => {
+              {data.images.map((image, i) => {
+                if (i >= maxGalleryLength) {
+                  return null;
+                }
+
                 return (
                   <div className="property__image-wrapper" key={image}>
                     <img className="property__image" src={image} alt={`${data.title} location photo`} />
@@ -74,15 +80,15 @@ const RoomPage = ({
                   {data.title}
                 </h1>
               )}
-              <button
-                className={`property__bookmark-button ${data.is_favorite ? `property__bookmark-button--active` : ``} button`}
-                type="button"
-              >
-                <svg className="property__bookmark-icon" width="31" height="33">
-                  <use xlinkHref={`#icon-bookmark`} />
-                </svg>
-                <span className="visually-hidden">{data.is_favorite ? `In bookmarks` : `To bookmarks`}</span>
-              </button>
+              <BookmarkButton
+                place="property"
+                isFavorite={data.is_favorite}
+                placeId={data.id}
+                disabled={favTogglePending}
+                onClick={(bookMarkData) => {
+                  onFavToggle({...bookMarkData, place: `page`});
+                }}
+              />
             </div>
             {data.rating && (
               <div className="property__rating rating">
@@ -151,33 +157,39 @@ const RoomPage = ({
                 )}
               </div>
             )}
-            <section className="property__reviews reviews">
-              <h2 className="reviews__title">Reviews &middot;
-                <span className="reviews__amount">{currentOfferReviews.length}</span>
-              </h2>
-              {currentOfferReviews.length > 0 && (
-                <ReviewsList reviews={currentOfferReviews} />
-              )}
-              {isAuthenticated && (
-                <CommentForm hotelId={data.id}/>
-              )}
-            </section>
+            <ReviewsList hotelId={data.id} />
           </div>
         </div>
-        {currentOfferNearby.locations.length > 0 && (
+        {nearby.locations.length > 0 && (
           <section className="property__map map" >
-            <Map points={currentOfferNearby.locations} />
+            <Map
+              activeMarkerId={data.id}
+              points={[...nearby.locations, {
+                lat: data.location.latitude,
+                lng: data.location.longitude,
+                offerId: data.id
+              }
+              ]}
+            />
           </section>
         )}
       </section>
-      {currentOfferNearby.list.length > 0 && (
+      {nearby.list.length > 0 && (
         <div className="container">
           <section className="near-places places">
             <h2 className="near-places__title">Other places in the neighbourhood</h2>
             <div className="near-places__list places__list">
-              {currentOfferNearby.list.map((offer) => {
+              {nearby.list.map((offer) => {
                 return (
-                  <PlaceCard key={offer.id} view="near-places" {...offer} />
+                  <PlaceCard
+                    key={offer.id}
+                    place="near-places"
+                    cardData={offer}
+                    favTogglePending={favTogglePending}
+                    onFavToggle={(bookMarkData) => {
+                      onFavToggle({...bookMarkData, place: `card`});
+                    }}
+                  />
                 );
               })}
             </div>
@@ -189,35 +201,40 @@ const RoomPage = ({
 };
 
 RoomPage.propTypes = {
-  isAuthenticated: PropTypes.bool,
-
+  onFavToggle: PropTypes.func,
   onFetchOfferData: PropTypes.func,
 
-  currentOfferReviews: PropTypes.arrayOf(reviewShape),
-  currentOfferNearby: PropTypes.shape({
+  maxGalleryLength: PropTypes.number,
+
+  nearby: PropTypes.shape({
     list: PropTypes.arrayOf(hotelShape),
     locations: PropTypes.arrayOf(locationShape)
   }),
 
-  currentOffer: PropTypes.shape({
+  offerDetails: PropTypes.shape({
     pending: PropTypes.bool,
+    favTogglePending: PropTypes.bool,
     data: hotelShape,
   })
 };
 
-const mapStateToProps = ({isAuthenticated, currentOffer, currentOfferReviews, currentOfferNearby}) => ({
-  isAuthenticated,
-  currentOffer,
-  currentOfferReviews,
-  currentOfferNearby,
+RoomPage.defaultProps = {
+  maxGalleryLength: LISTS_LIMITS.ROOM_GALLERY,
+};
+
+const mapStateToProps = ({offerDetails}) => ({
+  offerDetails,
+  nearby: offerDetails.nearby,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   onFetchOfferData(id) {
-    dispatch(fetchOfferDetails(id));
-    dispatch(fetchOfferReviews(id));
-    dispatch(fetchOfferDetailsNearby(id));
+    dispatch(ActionCreator.fetchOfferDetails(id));
+    dispatch(ActionCreator.fetchOfferDetailsNearby(id));
   },
+  onFavToggle(params) {
+    dispatch(ActionCreator.toggleFav(params));
+  }
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(RoomPage);

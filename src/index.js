@@ -5,8 +5,8 @@ import {Provider} from 'react-redux';
 import {composeWithDevTools} from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
 
-import reducer from './store/reducer';
-import {checkAuth} from './store/action';
+import rootReducer from './store/root-reducer';
+import {ActionCreator} from './store/auth/actions-auth';
 
 import createApi from './api';
 
@@ -15,11 +15,11 @@ import App from './components/app/app';
 const api = createApi();
 
 const store = createStore(
-    reducer,
+    rootReducer,
     composeWithDevTools(applyMiddleware(thunk.withExtraArgument(api))),
 );
 
-store.dispatch(checkAuth());
+store.dispatch(ActionCreator.checkAuth());
 
 ReactDOM.render(
     <Provider store={store}>

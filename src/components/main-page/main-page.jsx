@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {useLocation, useHistory} from 'react-router-dom';
 
-import {CITIES_LIST} from '../../store/reducer';
+import {CITIES_LIST} from '../../util/constants';
 import {SORT_OPTIONS} from '../../util/constants';
-import {setCity, setOffersData, fetchOffers} from '../../store/action';
+import {ActionCreator} from '../../store/offersList/actions-offersList';
 import {mergeSearchWithParam} from '../../util';
 import {getSortLabel} from '../../util/main-page-utils';
 import {hotelShape} from '../../propTypes/hotel';
@@ -19,10 +19,10 @@ import MainPageEmpty from '../main-page-empty/main-page-empty';
 import Preloader from "../preloader/preloader";
 
 const MainPage = ({
-  currentCity,
   onSetCity,
   onSetOffersData,
   offersList,
+  offersList: {currentCity},
   onFetchOffers
 }) => {
   const location = useLocation();
@@ -34,7 +34,7 @@ const MainPage = ({
   }, []);
 
   useEffect(() => {
-    if (offersList.cities.length && !offersList.pending) {
+    if (offersList && offersList.items && offersList.items.length && !offersList.pending) {
       const params = new URLSearchParams(location.search);
       const searchQuery = {
         city: params.get(`city`),
@@ -56,12 +56,12 @@ const MainPage = ({
         label: getSortLabel({sort, direction})}
       });
     }
-  }, [offersList.cities, offersList.pending, location.search]);
+  }, [offersList.items, offersList.pending, location.search]);
 
   const onSortChange = (param) => {
     const params = new URLSearchParams(location.search);
     history.push({search: mergeSearchWithParam(params, {
-      sort: param.name, direction: param.direction,
+      sort: param.name, direction: param.direction, city: params.get(`city`)
     })
     });
   };
@@ -112,34 +112,33 @@ const MainPage = ({
   );
 };
 
-const mapStateToProps = ({currentCity, offersList}) => ({
-  currentCity,
-  offersList,
-});
-
-const mapDispatchToProps = (dispatch) => ({
-  onSetCity(city) {
-    dispatch(setCity(city));
-  },
-  onFetchOffers() {
-    dispatch(fetchOffers());
-
-  },
-  onSetOffersData(city) {
-    dispatch(setOffersData(city));
-  },
-});
-
 MainPage.propTypes = {
-  currentCity: PropTypes.object,
   offersList: PropTypes.shape({
     pending: PropTypes.bool,
-    cities: PropTypes.arrayOf(hotelShape)
+    items: PropTypes.arrayOf(hotelShape),
+    currentCity: PropTypes.object,
   }),
 
   onSetCity: PropTypes.func,
   onSetOffersData: PropTypes.func,
   onFetchOffers: PropTypes.func,
 };
+
+const mapStateToProps = ({offersList}) => ({
+  offersList,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  onSetCity(city) {
+    dispatch(ActionCreator.setCity(city));
+  },
+  onFetchOffers() {
+    dispatch(ActionCreator.fetchOffersList());
+
+  },
+  onSetOffersData(city) {
+    dispatch(ActionCreator.setOffersListData(city));
+  },
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(MainPage);

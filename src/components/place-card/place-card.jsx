@@ -2,40 +2,47 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {Link} from 'react-router-dom';
 
-import {getPlaceCardInfoClass, getPlaceCardPreviewImgParams, getWrapClassName} from './utils';
+import BookmarkButton from '../bookmark-button/bookmark-button';
+
+import {getPlaceCardInfoClass, getWrapClassName} from './utils';
+import {getImageSizeFromConfig, IMAGE_SIZE_TYPES} from '../../util';
 
 import {hotelShape} from '../../propTypes/hotel';
+import {ROUTES} from '../../util/constants';
 
 const PlaceCard = ({
-  id,
-  // eslint-disable-next-line camelcase
-  is_premium,
-  // eslint-disable-next-line camelcase
-  preview_image,
-  // eslint-disable-next-line camelcase
-  is_favorite,
-  rating,
-  price,
-  title,
-  type,
-  view,
-  events,
+  cardData: {
+    id,
+    // eslint-disable-next-line camelcase
+    is_premium,
+    // eslint-disable-next-line camelcase
+    preview_image,
+    // eslint-disable-next-line camelcase
+    is_favorite,
+    rating,
+    price,
+    title,
+    type,
+  },
+  place,
+  favTogglePending,
+  onFavToggle,
+  domEvents
 }) => {
-  const placeCardInfoClass = getPlaceCardInfoClass(view);
-  const placeCardPreviewImgParams = getPlaceCardPreviewImgParams(view);
-
+  const placeCardInfoClass = getPlaceCardInfoClass(place);
+  const placeCardPreviewImgParams = getImageSizeFromConfig(IMAGE_SIZE_TYPES.placeCardPreview, place);
   return (
     <article
-      {...events}
-      className={`${getWrapClassName(view)} place-card`}>
+      {...domEvents}
+      className={`${getWrapClassName(place)} place-card`}>
       {/* eslint-disable-next-line camelcase */}
       {is_premium && (
         <div className="place-card__mark">
           <span>Premium</span>
         </div>
       )}
-      <div className={`${view}__image-wrapper place-card__image-wrapper`}>
-        <Link to={`/offer/${id}`}>
+      <div className={`${place}__image-wrapper place-card__image-wrapper`}>
+        <Link to={`${ROUTES.offer}${id}`}>
           {/* eslint-disable camelcase */}
           <img
             className="place-card__image"
@@ -53,16 +60,14 @@ const PlaceCard = ({
             <b className="place-card__price-value">&euro;{price}</b>
             <span className="place-card__price-text">&#47;&nbsp;night</span>
           </div>
-          <button
-            // eslint-disable-next-line camelcase
-            className={`place-card__bookmark-button ${is_favorite ? `place-card__bookmark-button--active` : ``} button`}
-            type="button">
-            <svg className="place-card__bookmark-icon" width="18" height="19">
-              <use xlinkHref="#icon-bookmark" />
-            </svg>
-            {/* eslint-disable-next-line camelcase */}
-            <span className="visually-hidden">{is_favorite ? `In bookmarks` : `To bookmarks`}</span>
-          </button>
+          <BookmarkButton
+            place='place-card'
+            /* eslint-disable-next-line camelcase */
+            isFavorite={is_favorite}
+            onClick={onFavToggle}
+            disabled={favTogglePending}
+            placeId={id}
+          />
         </div>
         <div className="place-card__rating rating">
           <div className="place-card__stars rating__stars">
@@ -71,7 +76,7 @@ const PlaceCard = ({
           </div>
         </div>
         <h2 className="place-card__name">
-          <Link to={`offer/${id}`}>{title}</Link>
+          <Link to={`${ROUTES.offer}${id}`}>{title}</Link>
         </h2>
         <p className="place-card__type">{type}</p>
       </div>
@@ -81,13 +86,21 @@ const PlaceCard = ({
 
 
 PlaceCard.defaultProps = {
-  view: `cities`
+  place: `cities`
 };
 
 PlaceCard.propTypes = {
-  ...hotelShape,
-  events: PropTypes.object,
-  view: PropTypes.oneOf([`cities`, `favorites`, `near-places`])
+  cardData: hotelShape,
+  stateDataKey: PropTypes.string,
+
+  favTogglePending: PropTypes.bool,
+
+  domEvents: PropTypes.object,
+
+  onFavToggle: PropTypes.func,
+
+  place: PropTypes.oneOf([`cities`, `favorites`, `near-places`]),
 };
 
 export default PlaceCard;
+

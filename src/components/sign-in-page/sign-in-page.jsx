@@ -3,19 +3,19 @@ import PropTypes from 'prop-types';
 import {Redirect} from 'react-router-dom';
 
 import {connect} from 'react-redux';
-import {login} from "../../store/action";
+import {ActionCreator} from "../../store/auth/actions-auth";
 
-const SignInPage = ({loginState, onLogin, isAuthenticated}) => {
+const SignInPage = ({loginFormPending, onLogin, isAuthenticated}) => {
   const [formData, setFormData] = useState({email: ``, password: ``});
 
-  const handleInput = (e) => {
+  const handleInputChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleFormSubmit = (e) => {
     e.preventDefault();
     onLogin(formData);
   };
@@ -30,13 +30,13 @@ const SignInPage = ({loginState, onLogin, isAuthenticated}) => {
       <div className="page__login-container container">
         <section className="login">
           <h1 className="login__title">Sign in</h1>
-          <form className="login__form form" action="#" method="post" onSubmit={handleSubmit}>
+          <form className="login__form form" action="#" method="post" onSubmit={handleFormSubmit}>
             <div className="login__input-wrapper form__input-wrapper">
               <label className="visually-hidden">E-mail</label>
               <input
-                onChange={handleInput}
+                onChange={handleInputChange}
                 value={formData.email}
-                disabled={loginState.pending}
+                disabled={loginFormPending}
                 className="login__input form__input"
                 type="email"
                 name="email"
@@ -46,8 +46,8 @@ const SignInPage = ({loginState, onLogin, isAuthenticated}) => {
             <div className="login__input-wrapper form__input-wrapper">
               <label className="visually-hidden">Password</label>
               <input
-                onChange={handleInput}
-                disabled={loginState.pending}
+                onChange={handleInputChange}
+                disabled={loginFormPending}
                 value={formData.password}
                 className="login__input form__input"
                 type="password"
@@ -59,7 +59,7 @@ const SignInPage = ({loginState, onLogin, isAuthenticated}) => {
             <button
               className="login__submit form__submit button"
               type="submit"
-              disabled={loginState.pending
+              disabled={loginFormPending
               || !formData.password.trim().length || !formData.email.trim().length}
             >
               Sign in
@@ -78,24 +78,21 @@ const SignInPage = ({loginState, onLogin, isAuthenticated}) => {
   );
 };
 
-const mapStateToProps = ({loginState, isAuthenticated}) => ({
-  loginState,
-  isAuthenticated,
+SignInPage.propTypes = {
+  isAuthenticated: PropTypes.bool,
+  loginFormPending: PropTypes.bool,
+  onLogin: PropTypes.func,
+};
+
+const mapStateToProps = ({authentication}) => ({
+  loginFormPending: authentication.loginFormPending,
+  isAuthenticated: authentication.status,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   onLogin(params) {
-    dispatch(login(params));
+    dispatch(ActionCreator.login(params));
   },
 });
-
-SignInPage.propTypes = {
-  isAuthenticated: PropTypes.bool,
-  onLogin: PropTypes.func,
-  loginState: PropTypes.shape({
-    pending: PropTypes.bool,
-    success: PropTypes.bool,
-  })
-};
 
 export default connect(mapStateToProps, mapDispatchToProps)(SignInPage);
