@@ -18,7 +18,6 @@ const BookmarkButton = ({
 
   return (
     <button
-      // eslint-disable-next-line camelcase
       className={`${place}__bookmark-button ${isFavorite ? `${place}__bookmark-button--active` : ``} button`}
       type="button"
       disabled={disabled}
@@ -32,7 +31,6 @@ const BookmarkButton = ({
       <svg className={`${place}__bookmark-icon`} width={iconSize.width} height={iconSize.height}>
         <use xlinkHref="#icon-bookmark" />
       </svg>
-      {/* eslint-disable-next-line camelcase */}
       <span className="visually-hidden">{isFavorite ? `In bookmarks` : `To bookmarks`}</span>
     </button>
   );

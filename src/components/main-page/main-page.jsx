@@ -124,9 +124,11 @@ MainPage.propTypes = {
   onFetchOffers: PropTypes.func,
 };
 
-const mapStateToProps = ({offersList}) => ({
-  offersList,
-});
+const mapStateToProps = ({offersList}) => {
+  return {
+    offersList,
+  };
+};
 
 const mapDispatchToProps = (dispatch) => ({
   onSetCity(city) {
@@ -134,7 +136,6 @@ const mapDispatchToProps = (dispatch) => ({
   },
   onFetchOffers() {
     dispatch(ActionCreator.fetchOffersList());
-
   },
   onSetOffersData(city) {
     dispatch(ActionCreator.setOffersListData(city));

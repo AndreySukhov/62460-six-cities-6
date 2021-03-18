@@ -82,7 +82,7 @@ const RoomPage = ({
               )}
               <BookmarkButton
                 place="property"
-                isFavorite={data.is_favorite}
+                isFavorite={data.isFavorite}
                 placeId={data.id}
                 disabled={favTogglePending}
                 onClick={(bookMarkData) => {

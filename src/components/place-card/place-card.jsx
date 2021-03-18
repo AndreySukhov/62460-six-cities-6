@@ -13,12 +13,9 @@ import {ROUTES} from '../../util/constants';
 const PlaceCard = ({
   cardData: {
     id,
-    // eslint-disable-next-line camelcase
-    is_premium,
-    // eslint-disable-next-line camelcase
-    preview_image,
-    // eslint-disable-next-line camelcase
-    is_favorite,
+    isPremium,
+    previewImage,
+    isFavorite,
     rating,
     price,
     title,
@@ -35,23 +32,20 @@ const PlaceCard = ({
     <article
       {...domEvents}
       className={`${getWrapClassName(place)} place-card`}>
-      {/* eslint-disable-next-line camelcase */}
-      {is_premium && (
+      {isPremium && (
         <div className="place-card__mark">
           <span>Premium</span>
         </div>
       )}
       <div className={`${place}__image-wrapper place-card__image-wrapper`}>
         <Link to={`${ROUTES.offer}${id}`}>
-          {/* eslint-disable camelcase */}
           <img
             className="place-card__image"
-            src={preview_image}
+            src={previewImage}
             width={placeCardPreviewImgParams.width}
             height={placeCardPreviewImgParams.height}
             alt="Place image"
           />
-          {/* eslint-enable camelcase */}
         </Link>
       </div>
       <div className={`place-card__info ${placeCardInfoClass}`}>
@@ -62,8 +56,7 @@ const PlaceCard = ({
           </div>
           <BookmarkButton
             place='place-card'
-            /* eslint-disable-next-line camelcase */
-            isFavorite={is_favorite}
+            isFavorite={isFavorite}
             onClick={onFavToggle}
             disabled={favTogglePending}
             placeId={id}

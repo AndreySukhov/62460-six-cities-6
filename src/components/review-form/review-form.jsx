@@ -70,6 +70,7 @@ const ReviewForm = ({
           disabled={
             comment.trim().length < commentLength.min ||
             comment.trim().length >= commentLength.max ||
+            !rating ||
             pending
           }
           className="reviews__submit form__submit button"

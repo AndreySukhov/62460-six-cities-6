@@ -6,27 +6,25 @@ import {ActionCreator} from '../../store/offersList/actions-offersList';
 
 import {hotelShape} from '../../propTypes/hotel';
 
-const OffersList = ({offers, setActiveOffer, favTogglePending, onFavToggle}) => {
-  return (
-    <>
-      {offers.map((offer) => {
-        return (
-          <PlaceCard
-            place="cities"
-            key={offer.id}
-            favTogglePending={favTogglePending}
-            onFavToggle={onFavToggle}
-            domEvents={{
-              onMouseEnter: () => setActiveOffer(offer.id),
-              onMouseLeave: () => setActiveOffer(null)
-            }}
-            cardData={offer}
-          />
-        );
-      })}
-    </>
-  );
-};
+const OffersList = ({offers, setActiveOffer, favTogglePending, onFavToggle}) => (
+  <>
+    {offers.map((offer) => {
+      return (
+        <PlaceCard
+          place="cities"
+          key={offer.id}
+          favTogglePending={favTogglePending}
+          onFavToggle={onFavToggle}
+          domEvents={{
+            onMouseEnter: () => setActiveOffer(offer.id),
+            onMouseLeave: () => setActiveOffer(null)
+          }}
+          cardData={offer}
+        />
+      );
+    })}
+  </>
+);
 
 OffersList.propTypes = {
   favTogglePending: PropTypes.bool,

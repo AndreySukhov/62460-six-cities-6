@@ -1,3 +1,5 @@
+import camelcaseKeys from "camelcase-keys";
+
 import {API_ENDPOITS} from "../../util/constants";
 import postFavorite from "../../util/post-favorite";
 
@@ -49,7 +51,7 @@ const ActionCreator = {
       if (offersNearby.status === 200) {
         dispatch({
           type: ActionTypes.OFFER_DETAILS_NEARBY_FETCH_SUCCESS,
-          payload: offersNearby.data,
+          payload: offersNearby.data.map((item) => camelcaseKeys(item, {deep: true}))
         });
       }
     };
@@ -64,7 +66,7 @@ const ActionCreator = {
       if (favRequest.status === 200) {
         dispatch({
           type: FAV_PLACES[place],
-          payload: favRequest.data
+          payload: camelcaseKeys(favRequest.data, {deep: true})
         });
       }
     };

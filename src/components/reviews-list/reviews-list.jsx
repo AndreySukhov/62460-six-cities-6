@@ -9,6 +9,7 @@ import ReviewForm from '../review-form/review-form';
 import {LISTS_LIMITS} from '../../util/constants';
 import reviewShape from '../../propTypes/review';
 import {ActionCreator} from '../../store/reviews/actions-reviews';
+import {getSortedReviewsList} from '../../store/reviews/selectors-reviews';
 
 const ReviewsList = ({
   reviews,
@@ -33,8 +34,8 @@ const ReviewsList = ({
         <span className="reviews__amount">{reviews.length}</span>
       </h2>
       <ul className="reviews__list">
-        {reviews.map((review) => {
-          if (review >= maxListLength) {
+        {reviews.map((review, i) => {
+          if (i >= maxListLength) {
             return null;
           }
           return (
@@ -62,11 +63,11 @@ ReviewsList.propTypes = {
 };
 
 ReviewsList.defaultProps = {
-  maxListLength: LISTS_LIMITS.ROOM_GALLERY,
+  maxListLength: LISTS_LIMITS.REVIEWS_LIST,
 };
 
 const mapStateToProps = ({reviews, authentication}) => ({
-  reviews: reviews.list,
+  reviews: getSortedReviewsList(reviews.list),
   pending: reviews.pending,
   isAuthenticated: authentication.status,
 });

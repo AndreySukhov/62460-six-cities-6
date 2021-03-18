@@ -33,29 +33,6 @@ const offerDetailsReducer = (state = defaultState, action) => {
         pending: false,
         data: null
       };
-    case ActionTypes.OFFER_REVIEWS_FETCH_START:
-      return {
-        ...state,
-        reviews: [],
-      };
-    case ActionTypes.OFFER_REVIEWS_FETCH_SUCCESS:
-      return {
-        ...state,
-        reviews: payload,
-      };
-    case ActionTypes.REVIEW_POST_START: {
-      return {
-        ...state,
-        reviewFormPending: true,
-      };
-    }
-    case ActionTypes.REVIEW_POST_SUCCESS: {
-      return {
-        ...state,
-        reviewFormPending: false,
-        reviews: payload,
-      };
-    }
     case ActionTypes.OFFER_DETAILS_NEARBY_FETCH_START: {
       return {
         ...state,
@@ -93,7 +70,6 @@ const offerDetailsReducer = (state = defaultState, action) => {
         favTogglePending: false,
         nearby: {
           ...state.nearby,
-          ...state.currentOfferNearby,
           list: state.nearby.list.map((listItem) => {
             if (listItem.id === payload.id) {
               return payload;

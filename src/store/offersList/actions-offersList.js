@@ -1,3 +1,5 @@
+import camelcaseKeys from 'camelcase-keys';
+
 import {API_ENDPOITS} from "../../util/constants";
 import postFavorite from "../../util/post-favorite";
 
@@ -33,7 +35,7 @@ const ActionCreator = {
       if (res.status === 200) {
         dispatch({
           type: ActionTypes.OFFERS_LIST_FETCH_SUCCESS,
-          payload: res.data
+          payload: res.data.map((item) => camelcaseKeys(item, {deep: true}))
         });
       }
     };
@@ -48,7 +50,7 @@ const ActionCreator = {
       if (favRequest.status === 200) {
         dispatch({
           type: ActionTypes.TOGGLE_FAV_SUCCESS,
-          payload: favRequest.data
+          payload: camelcaseKeys(favRequest.data, {deep: true})
         });
       }
     };

@@ -1,4 +1,5 @@
 import {ActionTypes} from './actions-favoritesList';
+import camelcaseKeys from "camelcase-keys";
 
 const defaultState = {
   pending: true,
@@ -20,12 +21,12 @@ const favoritesListReducer = (state = defaultState, action) => {
         if (!acc[curr.city.name]) {
           return {
             ...acc,
-            [curr.city.name]: [curr]
+            [curr.city.name]: [camelcaseKeys(curr, {deep: true})]
           };
         } else {
           return {
             ...acc,
-            [curr.city.name]: [...acc[curr.city.name], curr]
+            [curr.city.name]: [...acc[curr.city.name], camelcaseKeys(curr, {deep: true})]
           };
         }
       }, {});
