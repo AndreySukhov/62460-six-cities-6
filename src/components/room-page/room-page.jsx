@@ -3,14 +3,15 @@ import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import {useParams} from 'react-router-dom';
 
-import PlaceCard from "../place-card/place-card";
-import Preloader from "../preloader/preloader";
-import Map from "../map/map";
-import BookmarkButton from "../bookmark-button/bookmark-button";
-import ReviewsList from "../reviews-list/reviews-list";
-import {ActionCreator} from "../../store/offerDetails/actions-offerDetails";
-import {hotelShape} from "../../propTypes/hotel";
-import NotFoundPage from "../not-found-page/not-found-page";
+import PlaceCard from '../place-card/place-card';
+import Preloader from '../preloader/preloader';
+import Map from '../map/map';
+import BookmarkButton from '../bookmark-button/bookmark-button';
+import ReviewsList from '../reviews-list/reviews-list';
+import {ActionCreator} from '../../store/offerDetails/actions-offerDetails';
+import {getNearbyLocations} from '../../store/offerDetails/selectors-offerDetails';
+import hotelShape from '../../propTypes/hotel';
+import NotFoundPage from '../not-found-page/not-found-page';
 
 import {LISTS_LIMITS} from '../../util/constants';
 
@@ -22,6 +23,7 @@ const RoomPage = ({
   maxGalleryLength,
   offerDetails: {pending, data, favTogglePending},
   nearby,
+  nearbyLocations,
 }) => {
   const params = useParams();
 
@@ -160,11 +162,11 @@ const RoomPage = ({
             <ReviewsList hotelId={data.id} />
           </div>
         </div>
-        {nearby.locations.length > 0 && (
+        {nearbyLocations.length > 0 && (
           <section className="property__map map" >
             <Map
               activeMarkerId={data.id}
-              points={[...nearby.locations, {
+              points={[...nearbyLocations, {
                 lat: data.location.latitude,
                 lng: data.location.longitude,
                 offerId: data.id
@@ -174,12 +176,12 @@ const RoomPage = ({
           </section>
         )}
       </section>
-      {nearby.list.length > 0 && (
+      {nearby.length > 0 && (
         <div className="container">
           <section className="near-places places">
             <h2 className="near-places__title">Other places in the neighbourhood</h2>
             <div className="near-places__list places__list">
-              {nearby.list.map((offer) => {
+              {nearby.map((offer) => {
                 return (
                   <PlaceCard
                     key={offer.id}
@@ -206,10 +208,8 @@ RoomPage.propTypes = {
 
   maxGalleryLength: PropTypes.number,
 
-  nearby: PropTypes.shape({
-    list: PropTypes.arrayOf(hotelShape),
-    locations: PropTypes.arrayOf(locationShape)
-  }),
+  nearby: PropTypes.arrayOf(hotelShape),
+  nearbyLocations: PropTypes.arrayOf(locationShape),
 
   offerDetails: PropTypes.shape({
     pending: PropTypes.bool,
@@ -225,6 +225,7 @@ RoomPage.defaultProps = {
 const mapStateToProps = ({offerDetails}) => ({
   offerDetails,
   nearby: offerDetails.nearby,
+  nearbyLocations: getNearbyLocations(offerDetails.nearby),
 });
 
 const mapDispatchToProps = (dispatch) => ({

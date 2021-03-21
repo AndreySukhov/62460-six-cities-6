@@ -2,17 +2,23 @@ import React, {useMemo, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 
-import PlaceCard from "../place-card/place-card";
-import Preloader from "../preloader/preloader";
-import {ActionCreator} from "../../store/favoritesList/actions-favoritesList";
+import PlaceCard from '../place-card/place-card';
+import Preloader from '../preloader/preloader';
+import {formatFavoritesList} from '../../store/favoritesList/selectors-favoritesList';
+import {ActionCreator} from '../../store/favoritesList/actions-favoritesList';
 
-const FavoritesPage = ({favoritesList, onFetchFavoritesList, onFavToggle}) => {
+const FavoritesPage = ({
+  favoritesList,
+  favoritesListMeta,
+  onFetchFavoritesList,
+  onFavToggle
+}) => {
   useEffect(() => {
     onFetchFavoritesList();
   }, []);
 
-  const hasFavorites = useMemo(() => favoritesList && favoritesList.data && Object.keys(favoritesList.data).length !== 0, [favoritesList.data]);
-  if (favoritesList.pending) {
+  const hasFavorites = useMemo(() => favoritesList && Object.keys(favoritesList).length !== 0, [favoritesList]);
+  if (favoritesListMeta.pending) {
     return (
       <div className="container">
         <Preloader />
@@ -27,7 +33,7 @@ const FavoritesPage = ({favoritesList, onFetchFavoritesList, onFavToggle}) => {
             <>
               <h1 className="favorites__title">Saved listing</h1>
               <ul className="favorites__list">
-                {Object.entries(favoritesList.data).map(([key, fav]) => {
+                {Object.entries(favoritesList).map(([key, fav]) => {
                   return (
                     <li className="favorites__locations-items" key={key}>
                       <div className="favorites__locations locations locations--current">
@@ -42,7 +48,7 @@ const FavoritesPage = ({favoritesList, onFetchFavoritesList, onFavToggle}) => {
                           {fav.map((place) => {
                             return (
                               <PlaceCard
-                                favTogglePending={favoritesList.favTogglePending}
+                                favTogglePending={favoritesListMeta.favTogglePending}
                                 onFavToggle={onFavToggle}
                                 place="favorites"
                                 cardData={place}
@@ -75,15 +81,19 @@ const FavoritesPage = ({favoritesList, onFetchFavoritesList, onFavToggle}) => {
 FavoritesPage.propTypes = {
   onFetchFavoritesList: PropTypes.func,
   onFavToggle: PropTypes.func,
-  favoritesList: PropTypes.shape({
+  favoritesListMeta: PropTypes.shape({
     pending: PropTypes.bool,
     favTogglePending: PropTypes.bool,
-    data: PropTypes.object,
-  })
+  }),
+  favoritesList: PropTypes.object
 };
 
 const mapStateToProps = ({favoritesList}) => ({
-  favoritesList
+  favoritesListMeta: {
+    pending: favoritesList.pending,
+    favTogglePending: favoritesList.favTogglePending,
+  },
+  favoritesList: formatFavoritesList(favoritesList.data)
 });
 
 const mapDispatchToProps = (dispatch) => ({

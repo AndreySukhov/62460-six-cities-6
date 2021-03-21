@@ -1,6 +1,5 @@
 import {ActionTypes} from './actions-offersList';
-import {CITIES_LIST} from "../../util/constants";
-import {sortManager} from "../../util";
+import {CITIES_LIST} from '../../util/constants';
 
 const defaultState = {
   items: [],
@@ -9,10 +8,6 @@ const defaultState = {
   currentCity: {
     sort: {},
     name: CITIES_LIST[0],
-    offers: {
-      locations: [],
-      list: [],
-    },
   }
 };
 
@@ -40,37 +35,10 @@ const offersListReducer = (state = defaultState, action) => {
         pending: false,
       };
     case ActionTypes.OFFERS_LIST_SET:
-      const newOffers = state.items.reduce((acc, curr) => {
-        if (curr.city.name === payload.city) {
-          return {
-            offers: {
-              locations: [...acc.offers.locations, {
-                lat: curr.location.latitude,
-                lng: curr.location.longitude,
-                offerId: curr.id
-              }],
-              list: [...acc.offers.list, curr],
-            }
-          };
-        }
-        return acc;
-      }, {
-        offers: {
-          locations: [],
-          list: [],
-        }});
-
-      newOffers.offers.list = sortManager({
-        arr: newOffers.offers.list,
-        direction: payload.sort.direction,
-        sortParam: payload.sort.name
-      });
-
       return {
         ...state,
         currentCity: {
           ...state.currentCity,
-          ...newOffers,
           sort: payload.sort,
         }
       };
@@ -83,18 +51,12 @@ const offersListReducer = (state = defaultState, action) => {
       return {
         ...state,
         favTogglePending: false,
-        currentCity: {
-          ...state.currentCity,
-          offers: {
-            ...state.currentCity.offers,
-            list: state.currentCity.offers.list.map((listItem) => {
-              if (listItem.id === payload.id) {
-                return payload;
-              }
-              return listItem;
-            })
+        items: state.items.map((listItem) => {
+          if (listItem.id === payload.id) {
+            return payload;
           }
-        }
+          return listItem;
+        })
       };
     default:
       return state;

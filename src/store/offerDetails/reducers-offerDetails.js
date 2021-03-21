@@ -3,10 +3,7 @@ import {ActionTypes} from './actions-offerDetails';
 const defaultState = {
   pending: true,
   data: null,
-  nearby: {
-    list: [],
-    locations: []
-  },
+  nearby: [],
   reviewFormPending: false,
   favTogglePending: false,
   reviews: [],
@@ -36,25 +33,13 @@ const offerDetailsReducer = (state = defaultState, action) => {
     case ActionTypes.OFFER_DETAILS_NEARBY_FETCH_START: {
       return {
         ...state,
-        nearby: {
-          list: [],
-          locations: []
-        }
+        nearby: []
       };
     }
     case ActionTypes.OFFER_DETAILS_NEARBY_FETCH_SUCCESS: {
       return {
         ...state,
-        nearby: {
-          list: payload,
-          locations: payload.map((offer) => {
-            return {
-              lat: offer.location.latitude,
-              lng: offer.location.longitude,
-              offerId: offer.id
-            };
-          })
-        }
+        nearby: payload,
       };
     }
     case ActionTypes.TOGGLE_FAV_SUCCESS_PAGE: {
@@ -68,15 +53,12 @@ const offerDetailsReducer = (state = defaultState, action) => {
       return {
         ...state,
         favTogglePending: false,
-        nearby: {
-          ...state.nearby,
-          list: state.nearby.list.map((listItem) => {
-            if (listItem.id === payload.id) {
-              return payload;
-            }
-            return listItem;
-          })
-        }
+        nearby: state.nearby.map((listItem) => {
+          if (listItem.id === payload.id) {
+            return payload;
+          }
+          return listItem;
+        })
       };
     }
     default:

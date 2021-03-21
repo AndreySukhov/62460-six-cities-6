@@ -2,7 +2,7 @@ import React, {useState, useMemo, Fragment} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 
-import {ActionCreator} from "../../store/reviews/actions-reviews";
+import {ActionCreator} from '../../store/reviews/actions-reviews';
 
 const ReviewForm = ({
   ratingOptionsLength,

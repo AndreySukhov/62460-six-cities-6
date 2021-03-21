@@ -1,10 +1,9 @@
 import {ActionTypes} from './actions-favoritesList';
-import camelcaseKeys from "camelcase-keys";
 
 const defaultState = {
   pending: true,
   favTogglePending: false,
-  data: {}
+  data: []
 };
 
 const favoritesListReducer = (state = defaultState, action) => {
@@ -17,23 +16,9 @@ const favoritesListReducer = (state = defaultState, action) => {
       };
     }
     case ActionTypes.FAVORITES_LIST_FETCH_SUCCESS: {
-      let favByCities = payload.reduce((acc, curr) => {
-        if (!acc[curr.city.name]) {
-          return {
-            ...acc,
-            [curr.city.name]: [camelcaseKeys(curr, {deep: true})]
-          };
-        } else {
-          return {
-            ...acc,
-            [curr.city.name]: [...acc[curr.city.name], camelcaseKeys(curr, {deep: true})]
-          };
-        }
-      }, {});
-
       return {
         ...state,
-        data: favByCities,
+        data: payload,
         pending: false,
       };
     }
@@ -43,21 +28,11 @@ const favoritesListReducer = (state = defaultState, action) => {
         favTogglePending: true,
       };
     case ActionTypes.TOGGLE_FAV_SUCCESS:
-
-      const newFavItems = {
-        ...state.data,
-        [payload.city.name]: state.data[payload.city.name].filter((place) => {
-          return place.id !== payload.id;
-        })
-      };
-
-      if (!newFavItems[payload.city.name].length) {
-        delete newFavItems[payload.city.name];
-      }
-
       return {
         favTogglePending: false,
-        data: newFavItems,
+        data: state.data.filter((place) => {
+          return place.id !== payload.id;
+        })
       };
     default:
       return state;

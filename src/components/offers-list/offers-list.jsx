@@ -4,7 +4,7 @@ import PlaceCard from '../place-card/place-card';
 import {connect} from 'react-redux';
 import {ActionCreator} from '../../store/offersList/actions-offersList';
 
-import {hotelShape} from '../../propTypes/hotel';
+import hotelShape from '../../propTypes/hotel';
 
 const OffersList = ({offers, setActiveOffer, favTogglePending, onFavToggle}) => (
   <>

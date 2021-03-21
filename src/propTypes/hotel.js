@@ -1,10 +1,6 @@
 import PropTypes from 'prop-types';
 
-const locationShape = PropTypes.shape({
-  latitude: PropTypes.number,
-  longitude: PropTypes.number,
-  zoom: PropTypes.number,
-});
+import locationShape from './location';
 
 const hotelShape = PropTypes.shape({
   bedrooms: PropTypes.number,
@@ -34,6 +30,4 @@ const hotelShape = PropTypes.shape({
 });
 
 
-export {
-  hotelShape
-};
+export default hotelShape;

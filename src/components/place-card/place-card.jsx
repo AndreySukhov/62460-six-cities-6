@@ -7,7 +7,7 @@ import BookmarkButton from '../bookmark-button/bookmark-button';
 import {getPlaceCardInfoClass, getWrapClassName} from './utils';
 import {getImageSizeFromConfig, IMAGE_SIZE_TYPES} from '../../util';
 
-import {hotelShape} from '../../propTypes/hotel';
+import hotelShape from '../../propTypes/hotel';
 import {ROUTES} from '../../util/constants';
 
 const PlaceCard = ({

@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from 'axios';
 
 const BACKEND_URL = `https://6.react.pages.academy/six-cities`;
 const REQUEST_TIMEOUT = 5000;

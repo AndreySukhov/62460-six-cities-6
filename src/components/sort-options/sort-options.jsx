@@ -1,9 +1,14 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
-import sortOptionShape from "../../propTypes/sortOption";
 
-const SortOption = ({onOptionChoice, chosenOption, options}) => {
+import sortOptionShape from '../../propTypes/sortOption';
+
+const SortOption = ({onOptionChoice, chosenOption, options, currentGroup}) => {
   const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    setIsOpen(false);
+  }, [currentGroup]);
 
   return (
     <form className="places__sorting" action="#" method="get">
@@ -39,6 +44,7 @@ const SortOption = ({onOptionChoice, chosenOption, options}) => {
 };
 
 SortOption.propTypes = {
+  currentGroup: PropTypes.string,
   options: PropTypes.arrayOf(sortOptionShape),
   chosenOption: sortOptionShape,
   onOptionChoice: PropTypes.func,

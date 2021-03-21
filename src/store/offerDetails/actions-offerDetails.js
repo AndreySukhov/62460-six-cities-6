@@ -1,7 +1,7 @@
-import camelcaseKeys from "camelcase-keys";
+import camelcaseKeys from 'camelcase-keys';
 
-import {API_ENDPOITS} from "../../util/constants";
-import postFavorite from "../../util/post-favorite";
+import {API_ENDPOITS} from '../../util/constants';
+import postFavorite from '../../util/post-favorite';
 
 const ActionTypes = {
   OFFER_DETAILS_FETCH_START: `offerDetails/fetchDetailsStart`,

@@ -1,6 +1,6 @@
-import camelcaseKeys from "camelcase-keys";
-import {API_ENDPOITS} from "../../util/constants";
-import postFavorite from "../../util/post-favorite";
+import camelcaseKeys from 'camelcase-keys';
+import {API_ENDPOITS} from '../../util/constants';
+import postFavorite from '../../util/post-favorite';
 
 const ActionTypes = {
   FAVORITES_LIST_FETCH_START: `favoritesList/fetchStart`,
