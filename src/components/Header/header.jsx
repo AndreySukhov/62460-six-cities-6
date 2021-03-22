@@ -36,7 +36,6 @@ const Header = ({isAuthenticated}) => {
   );
 };
 
-
 Header.propTypes = {
   isAuthenticated: PropTypes.bool,
 };
