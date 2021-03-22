@@ -2,19 +2,19 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import PlaceCard from '../place-card/place-card';
 import {connect} from 'react-redux';
-import {ActionCreator} from '../../store/offersList/actions-offersList';
+import {ActionCreator} from './store/actions';
 
 import hotelShape from '../../propTypes/hotel';
 
-const OffersList = ({offers, setActiveOffer, favTogglePending, onFavToggle}) => (
+const OffersList = ({offers, setActiveOffer, favoriteTogglePending, onFavoriteToggle}) => (
   <>
     {offers.map((offer) => {
       return (
         <PlaceCard
           place="cities"
           key={offer.id}
-          favTogglePending={favTogglePending}
-          onFavToggle={onFavToggle}
+          favoriteTogglePending={favoriteTogglePending}
+          onFavoriteToggle={onFavoriteToggle}
           domEvents={{
             onMouseEnter: () => setActiveOffer(offer.id),
             onMouseLeave: () => setActiveOffer(null)
@@ -27,23 +27,23 @@ const OffersList = ({offers, setActiveOffer, favTogglePending, onFavToggle}) => 
 );
 
 OffersList.propTypes = {
-  favTogglePending: PropTypes.bool,
+  favoriteTogglePending: PropTypes.bool,
 
   offers: PropTypes.arrayOf(PropTypes.shape({
     hotelShape
   })),
 
-  onFavToggle: PropTypes.func,
+  onFavoriteToggle: PropTypes.func,
   setActiveOffer: PropTypes.func
 };
 
 const mapStateToProps = ({offersList}) => ({
-  favTogglePending: offersList.favTogglePending,
+  favoriteTogglePending: offersList.favoriteTogglePending,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  onFavToggle(params) {
-    dispatch(ActionCreator.toggleFav(params));
+  onFavoriteToggle(params) {
+    dispatch(ActionCreator.toggleFavorite(params));
   },
 });
 

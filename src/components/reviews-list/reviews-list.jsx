@@ -8,8 +8,8 @@ import ReviewForm from '../review-form/review-form';
 
 import {LISTS_LIMITS} from '../../util/constants';
 import reviewShape from '../../propTypes/review';
-import {ActionCreator} from '../../store/reviews/actions-reviews';
-import {getSortedReviewsList} from '../../store/reviews/selectors-reviews';
+import {ActionCreator} from './store/actions';
+import {getSortedReviewsList} from './store/selectors';
 
 const ReviewsList = ({
   reviews,
@@ -69,7 +69,7 @@ ReviewsList.defaultProps = {
 const mapStateToProps = ({reviews, authentication}) => ({
   reviews: getSortedReviewsList(reviews.list),
   pending: reviews.pending,
-  isAuthenticated: authentication.status,
+  isAuthenticated: !!authentication.user,
 });
 
 const mapDispatchToProps = (dispatch) => ({

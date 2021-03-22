@@ -1,10 +1,10 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {ROUTES} from "../../util/constants";
+import {ROUTES} from '../../util/constants';
+import userShape from '../../propTypes/user';
 
-const Header = ({isAuthenticated}) => {
+const Header = ({user}) => {
   return (
     <header className="header">
       <div className="container">
@@ -19,11 +19,11 @@ const Header = ({isAuthenticated}) => {
               <li className="header__nav-item user">
                 <Link
                   className="header__nav-link header__nav-link--profile"
-                  to={isAuthenticated ? `${ROUTES.favorites}` : `${ROUTES.login}`}>
+                  to={user ? `${ROUTES.favorites}` : `${ROUTES.login}`}>
                   <div className="header__avatar-wrapper user__avatar-wrapper">
                   </div>
-                  {isAuthenticated ?
-                    (<span className="header__user-name user__name">Oliver.conner@gmail.com</span>) :
+                  {user ?
+                    (<span className="header__user-name user__name">{user.email}</span>) :
                     (<span className="header__login">Sign in</span>)
                   }
                 </Link>
@@ -37,11 +37,11 @@ const Header = ({isAuthenticated}) => {
 };
 
 Header.propTypes = {
-  isAuthenticated: PropTypes.bool,
+  user: userShape,
 };
 
 const mapStateToProps = ({authentication}) => ({
-  isAuthenticated: authentication.status,
+  user: authentication.user,
 });
 
 export default connect(mapStateToProps, null)(Header);

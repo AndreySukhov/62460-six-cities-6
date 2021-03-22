@@ -8,20 +8,21 @@ import Preloader from '../preloader/preloader';
 import Map from '../map/map';
 import BookmarkButton from '../bookmark-button/bookmark-button';
 import ReviewsList from '../reviews-list/reviews-list';
-import {ActionCreator} from '../../store/offerDetails/actions-offerDetails';
-import {getNearbyLocations} from '../../store/offerDetails/selectors-offerDetails';
+import {ActionCreator} from './store/actions';
+import {getNearbyLocations} from './store/selectors';
 import hotelShape from '../../propTypes/hotel';
 import NotFoundPage from '../not-found-page/not-found-page';
 
 import {LISTS_LIMITS} from '../../util/constants';
+import {declOfNum} from '../../util';
 
 import locationShape from "../../propTypes/location";
 
-const RoomPage = ({
+const OfferDetailsPage = ({
   onFetchOfferData,
-  onFavToggle,
+  onFavoriteToggle,
   maxGalleryLength,
-  offerDetails: {pending, data, favTogglePending},
+  offerDetails: {pending, data, favoriteTogglePending},
   nearby,
   nearbyLocations,
 }) => {
@@ -71,7 +72,7 @@ const RoomPage = ({
         )}
         <div className="property__container container">
           <div className="property__wrapper">
-            {data.is_premium && (
+            {data.isPremium && (
               <div className="property__mark">
                 <span>Premium</span>
               </div>
@@ -86,9 +87,9 @@ const RoomPage = ({
                 place="property"
                 isFavorite={data.isFavorite}
                 placeId={data.id}
-                disabled={favTogglePending}
+                disabled={favoriteTogglePending}
                 onClick={(bookMarkData) => {
-                  onFavToggle({...bookMarkData, place: `page`});
+                  onFavoriteToggle({...bookMarkData, place: `page`});
                 }}
               />
             </div>
@@ -106,10 +107,10 @@ const RoomPage = ({
                 {data.type}
               </li>
               <li className="property__feature property__feature--bedrooms">
-                {data.bedrooms} Bedrooms
+                {data.bedrooms} {declOfNum(data.bedrooms, [`Bedroom`, `Bedrooms`, `Bedrooms`])}
               </li>
               <li className="property__feature property__feature--adults">
-                Max {data.max_adults} adults
+                Max {data.maxAdults}  {declOfNum(data.maxAdults, [`adult`, `adults`, `adults`])}
               </li>
             </ul>
             {data.price && (
@@ -138,10 +139,10 @@ const RoomPage = ({
                   <>
                     <h2 className="property__host-title">Meet the host</h2>
                     <div className="property__host-user user">
-                      <div className={`property__avatar-wrapper user__avatar-wrapper ${data.host.is_pro ? `property__avatar-wrapper--pro` : ``}`}>
+                      <div className={`property__avatar-wrapper user__avatar-wrapper ${data.host.isPro ? `property__avatar-wrapper--pro` : ``}`}>
                         <img
                           className="property__avatar user__avatar"
-                          src={data.host.avatar_url} width="74" height="74"
+                          src={data.host.avatarUrl} width="74" height="74"
                           alt="Host avatar" />
                       </div>
                       <span className="property__user-name">
@@ -187,9 +188,9 @@ const RoomPage = ({
                     key={offer.id}
                     place="near-places"
                     cardData={offer}
-                    favTogglePending={favTogglePending}
-                    onFavToggle={(bookMarkData) => {
-                      onFavToggle({...bookMarkData, place: `card`});
+                    favoriteTogglePending={favoriteTogglePending}
+                    onFavoriteToggle={(bookMarkData) => {
+                      onFavoriteToggle({...bookMarkData, place: `card`});
                     }}
                   />
                 );
@@ -202,8 +203,8 @@ const RoomPage = ({
   );
 };
 
-RoomPage.propTypes = {
-  onFavToggle: PropTypes.func,
+OfferDetailsPage.propTypes = {
+  onFavoriteToggle: PropTypes.func,
   onFetchOfferData: PropTypes.func,
 
   maxGalleryLength: PropTypes.number,
@@ -213,12 +214,12 @@ RoomPage.propTypes = {
 
   offerDetails: PropTypes.shape({
     pending: PropTypes.bool,
-    favTogglePending: PropTypes.bool,
+    favoriteTogglePending: PropTypes.bool,
     data: hotelShape,
   })
 };
 
-RoomPage.defaultProps = {
+OfferDetailsPage.defaultProps = {
   maxGalleryLength: LISTS_LIMITS.ROOM_GALLERY,
 };
 
@@ -233,9 +234,9 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(ActionCreator.fetchOfferDetails(id));
     dispatch(ActionCreator.fetchOfferDetailsNearby(id));
   },
-  onFavToggle(params) {
-    dispatch(ActionCreator.toggleFav(params));
+  onFavoriteToggle(params) {
+    dispatch(ActionCreator.toggleFavorite(params));
   }
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(RoomPage);
+export default connect(mapStateToProps, mapDispatchToProps)(OfferDetailsPage);

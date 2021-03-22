@@ -5,8 +5,8 @@ import {useLocation, useHistory} from 'react-router-dom';
 
 import {CITIES_LIST} from '../../util/constants';
 import {SORT_OPTIONS} from '../../util/constants';
-import {ActionCreator} from '../../store/offersList/actions-offersList';
-import {getCurrentCityData} from '../../store/offersList/selectors-offersList';
+import {ActionCreator} from '../offers-list/store/actions';
+import {getCurrentCityData} from '../offers-list/store/selectors';
 import {mergeSearchWithParam} from '../../util';
 import {getSortLabel} from '../../util/main-page-utils';
 import hotelShape from '../../propTypes/hotel';
@@ -37,7 +37,7 @@ const MainPage = ({
   }, []);
 
   useEffect(() => {
-    if (items && items.length && !pending) {
+    if (!pending) {
       const params = new URLSearchParams(location.search);
       const searchQuery = {
         city: params.get(`city`),
@@ -70,7 +70,6 @@ const MainPage = ({
   };
 
   const hasOffers = currentCityOffers.list.length && currentCityOffers.locations.length;
-
   return (
     <main className="page__main page__main--index">
       <h1 className="visually-hidden">Cities</h1>

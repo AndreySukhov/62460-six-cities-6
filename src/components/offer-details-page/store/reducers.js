@@ -1,11 +1,11 @@
-import {ActionTypes} from './actions-offerDetails';
+import {ActionTypes} from './actions';
 
 const defaultState = {
   pending: true,
   data: null,
   nearby: [],
   reviewFormPending: false,
-  favTogglePending: false,
+  favoriteTogglePending: false,
   reviews: [],
 };
 
@@ -42,17 +42,17 @@ const offerDetailsReducer = (state = defaultState, action) => {
         nearby: payload,
       };
     }
-    case ActionTypes.TOGGLE_FAV_SUCCESS_PAGE: {
+    case ActionTypes.TOGGLE_FAVORITE_SUCCESS_PAGE: {
       return {
         ...state,
-        favTogglePending: false,
+        favoriteTogglePending: false,
         data: payload
       };
     }
-    case ActionTypes.TOGGLE_FAV_SUCCESS_CARD: {
+    case ActionTypes.TOGGLE_FAVORITE_SUCCESS_CARD: {
       return {
         ...state,
-        favTogglePending: false,
+        favoriteTogglePending: false,
         nearby: state.nearby.map((listItem) => {
           if (listItem.id === payload.id) {
             return payload;

@@ -6,11 +6,9 @@ const reviewShape = PropTypes.shape({
   id: PropTypes.number,
   rating: PropTypes.number,
   user: PropTypes.shape({
-    // eslint-disable-next-line camelcase
-    avatar_url: PropTypes.string,
+    avatarUrl: PropTypes.string,
     id: PropTypes.number,
-    // eslint-disable-next-line camelcase
-    is_pro: PropTypes.bool,
+    isPro: PropTypes.bool,
     name: PropTypes.string
   })
 });

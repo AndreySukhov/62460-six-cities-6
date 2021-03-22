@@ -4,14 +4,14 @@ import {connect} from 'react-redux';
 
 import PlaceCard from '../place-card/place-card';
 import Preloader from '../preloader/preloader';
-import {formatFavoritesList} from '../../store/favoritesList/selectors-favoritesList';
-import {ActionCreator} from '../../store/favoritesList/actions-favoritesList';
+import {formatFavoritesList} from './store/selectors';
+import {ActionCreator} from './store/actions';
 
 const FavoritesPage = ({
   favoritesList,
   favoritesListMeta,
   onFetchFavoritesList,
-  onFavToggle
+  onFavoriteToggle
 }) => {
   useEffect(() => {
     onFetchFavoritesList();
@@ -48,8 +48,8 @@ const FavoritesPage = ({
                           {fav.map((place) => {
                             return (
                               <PlaceCard
-                                favTogglePending={favoritesListMeta.favTogglePending}
-                                onFavToggle={onFavToggle}
+                                favTogglePending={favoritesListMeta.favoriteTogglePending}
+                                onFavoriteToggle={onFavoriteToggle}
                                 place="favorites"
                                 cardData={place}
                                 key={place.id} />
@@ -80,10 +80,10 @@ const FavoritesPage = ({
 
 FavoritesPage.propTypes = {
   onFetchFavoritesList: PropTypes.func,
-  onFavToggle: PropTypes.func,
+  onFavoriteToggle: PropTypes.func,
   favoritesListMeta: PropTypes.shape({
     pending: PropTypes.bool,
-    favTogglePending: PropTypes.bool,
+    favoriteTogglePending: PropTypes.bool,
   }),
   favoritesList: PropTypes.object
 };
@@ -91,7 +91,7 @@ FavoritesPage.propTypes = {
 const mapStateToProps = ({favoritesList}) => ({
   favoritesListMeta: {
     pending: favoritesList.pending,
-    favTogglePending: favoritesList.favTogglePending,
+    favoriteTogglePending: favoritesList.favoriteTogglePending,
   },
   favoritesList: formatFavoritesList(favoritesList.data)
 });
@@ -100,8 +100,8 @@ const mapDispatchToProps = (dispatch) => ({
   onFetchFavoritesList() {
     dispatch(ActionCreator.fetchFavoritesList());
   },
-  onFavToggle(params) {
-    dispatch(ActionCreator.toggleFav(params));
+  onFavoriteToggle(params) {
+    dispatch(ActionCreator.toggleFavorite(params));
   },
 });
 

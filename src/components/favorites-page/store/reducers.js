@@ -1,8 +1,8 @@
-import {ActionTypes} from './actions-favoritesList';
+import {ActionTypes} from './actions';
 
 const defaultState = {
   pending: true,
-  favTogglePending: false,
+  favoriteTogglePending: false,
   data: []
 };
 
@@ -22,14 +22,14 @@ const favoritesListReducer = (state = defaultState, action) => {
         pending: false,
       };
     }
-    case ActionTypes.TOGGLE_FAV_START:
+    case ActionTypes.TOGGLE_FAVORITE_START:
       return {
         ...state,
-        favTogglePending: true,
+        favoriteTogglePending: true,
       };
-    case ActionTypes.TOGGLE_FAV_SUCCESS:
+    case ActionTypes.TOGGLE_FAVORITE_SUCCESS:
       return {
-        favTogglePending: false,
+        favoriteTogglePending: false,
         data: state.data.filter((place) => {
           return place.id !== payload.id;
         })

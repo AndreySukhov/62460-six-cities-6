@@ -6,7 +6,7 @@ import {composeWithDevTools} from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
 
 import rootReducer from './store/root-reducer';
-import {ActionCreator} from './store/auth/actions-auth';
+import {ActionCreator} from './components/sign-in-page/store/actions';
 
 import createApi from './api';
 

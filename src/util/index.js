@@ -21,7 +21,7 @@ const mergeSearchWithParam = (search, params) => {
  * @param {string} direction
  * @return {this|*[]} вернет отсортированный массив
  */
-const sortManager = ({arr, sortParam, direction}) => {
+const sortOffers = ({arr, sortParam, direction}) => {
   const SORT_DIRECTIONS = {
     asc: `asc`,
     desc: `desc`,
@@ -72,9 +72,21 @@ const getImageSizeFromConfig = (imageType, place) => {
   return {};
 };
 
+/**
+ * @desc Склонение существительных
+ * @param { number } number
+ * @param { array} titles
+ * @return {string }
+ */
+const declOfNum = (number, titles) => {
+  const cases = [2, 0, 1, 1, 1, 2];
+  return titles[(number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5) ? number % 10 : 5]];
+};
+
 export {
   mergeSearchWithParam,
-  sortManager,
+  sortOffers,
   getImageSizeFromConfig,
   IMAGE_SIZE_TYPES,
+  declOfNum,
 };

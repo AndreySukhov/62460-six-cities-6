@@ -1,7 +1,5 @@
-import camelcaseKeys from 'camelcase-keys';
-
-import {API_ENDPOITS} from '../../util/constants';
-import postFavorite from '../../util/post-favorite';
+import {API_ENDPOITS} from '../../../util/constants';
+import postFavorite from '../../../util/post-favorite';
 
 const ActionTypes = {
   OFFER_DETAILS_FETCH_START: `offerDetails/fetchDetailsStart`,
@@ -11,14 +9,14 @@ const ActionTypes = {
   OFFER_DETAILS_NEARBY_FETCH_START: `offerDetails/fetchDetailsNearbyStart`,
   OFFER_DETAILS_NEARBY_FETCH_SUCCESS: `offerDetails/fetchDetailsNearbySuccess`,
 
-  TOGGLE_FAV_START: `offerDetails/toggleFavStart`,
-  TOGGLE_FAV_SUCCESS_PAGE: `offerDetails/toggleFavSuccessPage`,
-  TOGGLE_FAV_SUCCESS_CARD: `offerDetails/toggleFavSuccessCard`,
+  TOGGLE_FAVORITE_START: `offerDetails/toggleFavoriteStart`,
+  TOGGLE_FAVORITE_SUCCESS_PAGE: `offerDetails/toggleFavoriteSuccessPage`,
+  TOGGLE_FAVORITE_SUCCESS_CARD: `offerDetails/toggleFavoriteSuccessCard`,
 };
 
-const FAV_PLACES = {
-  page: ActionTypes.TOGGLE_FAV_SUCCESS_PAGE,
-  card: ActionTypes.TOGGLE_FAV_SUCCESS_CARD,
+const FAVORITE_PLACES = {
+  page: ActionTypes.TOGGLE_FAVORITE_SUCCESS_PAGE,
+  card: ActionTypes.TOGGLE_FAVORITE_SUCCESS_CARD,
 };
 
 const ActionCreator = {
@@ -51,22 +49,22 @@ const ActionCreator = {
       if (offersNearby.status === 200) {
         dispatch({
           type: ActionTypes.OFFER_DETAILS_NEARBY_FETCH_SUCCESS,
-          payload: offersNearby.data.map((item) => camelcaseKeys(item, {deep: true}))
+          payload: offersNearby.data
         });
       }
     };
   },
-  toggleFav: ({status, id, place}) => {
+  toggleFavorite: ({status, id, place}) => {
     return async (dispatch, _getState, api) => {
       dispatch({
-        type: ActionTypes.TOGGLE_FAV_START
+        type: ActionTypes.TOGGLE_FAVORITE_START
       });
 
-      const favRequest = await postFavorite({status, id, api});
-      if (favRequest.status === 200) {
+      const favoriteRequest = await postFavorite({status, id, api});
+      if (favoriteRequest.status === 200) {
         dispatch({
-          type: FAV_PLACES[place],
-          payload: camelcaseKeys(favRequest.data, {deep: true})
+          type: FAVORITE_PLACES[place],
+          payload: favoriteRequest.data
         });
       }
     };

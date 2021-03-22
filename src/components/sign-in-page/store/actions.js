@@ -1,4 +1,4 @@
-import {API_ENDPOITS} from "../../util/constants";
+import {API_ENDPOITS} from "../../../util/constants";
 
 const ActionTypes = {
   AUTHENTICATION_SUBMIT_START: `authentication/submitStart`,
@@ -15,24 +15,22 @@ const ActionCreator = {
       dispatch({
         type: ActionTypes.AUTHENTICATION_STATUS_FETCH_START
       });
-
       try {
-        const isAuthenticated = await api.get(API_ENDPOITS.login);
+        const authRequest = await api.get(API_ENDPOITS.login);
         dispatch({
           type: ActionTypes.AUTHENTICATION_STATUS_FETCH_SUCCESS,
-          payload: isAuthenticated.status === 200,
+          payload: authRequest.data
         });
       } catch (e) {
         dispatch({
           type: ActionTypes.AUTHENTICATION_STATUS_FETCH_SUCCESS,
-          payload: false,
+          payload: null
         });
       }
     };
   },
   login: (params) => {
     return async (dispatch, _getState, api) => {
-
       dispatch({
         type: ActionTypes.AUTHENTICATION_SUBMIT_START
       });
@@ -41,14 +39,16 @@ const ActionCreator = {
         const res = await api.post(API_ENDPOITS.login, {...params});
         if (res.status === 200) {
           dispatch({
-            type: ActionTypes.AUTHENTICATION_SUBMIT_SUCCESS
+            type: ActionTypes.AUTHENTICATION_SUBMIT_SUCCESS,
+            payload: res.data
           });
         }
       } catch (e) {
         // eslint-disable-next-line no-alert
         alert(e.response.data.error);
         dispatch({
-          type: ActionTypes.AUTHENTICATION_SUBMIT_ERROR
+          type: ActionTypes.AUTHENTICATION_SUBMIT_ERROR,
+          payload: null
         });
       }
     };

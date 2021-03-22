@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {Redirect} from 'react-router-dom';
 
 import {connect} from 'react-redux';
-import {ActionCreator} from "../../store/auth/actions-auth";
+import {ActionCreator} from "./store/actions";
 
 const SignInPage = ({loginFormPending, onLogin, isAuthenticated}) => {
   const [formData, setFormData] = useState({email: ``, password: ``});
@@ -86,7 +86,7 @@ SignInPage.propTypes = {
 
 const mapStateToProps = ({authentication}) => ({
   loginFormPending: authentication.loginFormPending,
-  isAuthenticated: authentication.status,
+  isAuthenticated: !!authentication.user,
 });
 
 const mapDispatchToProps = (dispatch) => ({

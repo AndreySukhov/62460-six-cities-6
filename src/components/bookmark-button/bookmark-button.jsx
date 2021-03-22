@@ -52,7 +52,7 @@ BookmarkButton.propTypes = {
 };
 
 const mapStateToProps = ({authentication}) => ({
-  isAuthenticated: authentication.status,
+  isAuthenticated: !!authentication.user,
 });
 
 export default connect(mapStateToProps, null)(BookmarkButton);

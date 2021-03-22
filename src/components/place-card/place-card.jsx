@@ -22,8 +22,8 @@ const PlaceCard = ({
     type,
   },
   place,
-  favTogglePending,
-  onFavToggle,
+  favoriteTogglePending,
+  onFavoriteToggle,
   domEvents
 }) => {
   const placeCardInfoClass = getPlaceCardInfoClass(place);
@@ -57,8 +57,8 @@ const PlaceCard = ({
           <BookmarkButton
             place='place-card'
             isFavorite={isFavorite}
-            onClick={onFavToggle}
-            disabled={favTogglePending}
+            onClick={onFavoriteToggle}
+            disabled={favoriteTogglePending}
             placeId={id}
           />
         </div>
@@ -86,11 +86,11 @@ PlaceCard.propTypes = {
   cardData: hotelShape,
   stateDataKey: PropTypes.string,
 
-  favTogglePending: PropTypes.bool,
+  favoriteTogglePending: PropTypes.bool,
 
   domEvents: PropTypes.object,
 
-  onFavToggle: PropTypes.func,
+  onFavoriteToggle: PropTypes.func,
 
   place: PropTypes.oneOf([`cities`, `favorites`, `near-places`]),
 };

@@ -1,13 +1,12 @@
-import camelcaseKeys from 'camelcase-keys';
-import {API_ENDPOITS} from '../../util/constants';
-import postFavorite from '../../util/post-favorite';
+import {API_ENDPOITS} from '../../../util/constants';
+import postFavorite from '../../../util/post-favorite';
 
 const ActionTypes = {
   FAVORITES_LIST_FETCH_START: `favoritesList/fetchStart`,
   FAVORITES_LIST_FETCH_SUCCESS: `favoritesList/fetchSuccess`,
 
-  TOGGLE_FAV_START: `favoritesList/toggleFavStart`,
-  TOGGLE_FAV_SUCCESS: `favoritesList/toggleFavSuccess`,
+  TOGGLE_FAVORITE_START: `favoritesList/toggleFavoriteStart`,
+  TOGGLE_FAVORITE_SUCCESS: `favoritesList/toggleFavoriteSuccess`,
 };
 
 const ActionCreator = {
@@ -22,22 +21,22 @@ const ActionCreator = {
       if (result.status === 200) {
         dispatch({
           type: ActionTypes.FAVORITES_LIST_FETCH_SUCCESS,
-          payload: result.data,
+          payload: result.data
         });
       }
     };
   },
-  toggleFav: ({status, id}) => {
+  toggleFavorite: ({status, id}) => {
     return async (dispatch, _getState, api) => {
       dispatch({
-        type: ActionTypes.TOGGLE_FAV_START
+        type: ActionTypes.TOGGLE_FAVORITE_START
       });
 
-      const favRequest = await postFavorite({status, id, api});
-      if (favRequest.status === 200) {
+      const favoriteRequest = await postFavorite({status, id, api});
+      if (favoriteRequest.status === 200) {
         dispatch({
-          type: ActionTypes.TOGGLE_FAV_SUCCESS,
-          payload: camelcaseKeys(favRequest.data, {deep: true})
+          type: ActionTypes.TOGGLE_FAVORITE_SUCCESS,
+          payload: favoriteRequest.data
         });
       }
     };

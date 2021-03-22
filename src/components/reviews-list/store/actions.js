@@ -1,8 +1,9 @@
-import {API_ENDPOITS} from "../../util/constants";
+import {API_ENDPOITS} from "../../../util/constants";
 
 const ActionTypes = {
   REVIEW_POST_START: `reviews/postStart`,
   REVIEW_POST_SUCCESS: `reviews/postSuccess`,
+  REVIEW_POST_ERROR: `reviews/postError`,
 
   REVIEWS_FETCH_START: `reviews/fetchStart`,
   REVIEWS_FETCH_SUCCESS: `reviews/fetchSuccess`,
@@ -15,14 +16,21 @@ const ActionCreator = {
         type: ActionTypes.REVIEW_POST_START
       });
 
-      const result = await api.post(`${API_ENDPOITS.comments}/${id}`, {
-        ...params
-      });
-
-      if (result.status === 200) {
+      try {
+        const result = await api.post(`${API_ENDPOITS.comments}/${id}`, {
+          ...params
+        });
+        if (result.status === 200) {
+          dispatch({
+            type: ActionTypes.REVIEW_POST_SUCCESS,
+            payload: result.data,
+          });
+        }
+      } catch (e) {
+        // eslint-disable-next-line no-alert
+        alert(e.response.data.error);
         dispatch({
-          type: ActionTypes.REVIEW_POST_SUCCESS,
-          payload: result.data,
+          type: ActionTypes.REVIEW_POST_ERROR,
         });
       }
     };

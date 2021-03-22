@@ -1,4 +1,4 @@
-import {ActionTypes} from './actions-reviews';
+import {ActionTypes} from './actions';
 
 const defaultState = {
   formPending: false,
@@ -33,6 +33,11 @@ const reviewsReducer = (state = defaultState, action) => {
         ...state,
         formPending: false,
         list: payload,
+      };
+    case ActionTypes.REVIEW_POST_ERROR:
+      return {
+        ...state,
+        formPending: false,
       };
     default:
       return state;

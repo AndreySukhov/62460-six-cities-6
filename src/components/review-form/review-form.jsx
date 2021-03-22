@@ -1,13 +1,14 @@
-import React, {useState, useMemo, Fragment} from 'react';
+import React, {useState, useMemo, useEffect, Fragment} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 
-import {ActionCreator} from '../../store/reviews/actions-reviews';
+import {ActionCreator} from '../reviews-list/store/actions';
 
 const ReviewForm = ({
   ratingOptionsLength,
   commentLength,
   hotelId,
+  listLength,
   pending,
   onSendReview
 }) => {
@@ -22,8 +23,11 @@ const ReviewForm = ({
     e.preventDefault();
     onSendReview({params: {comment, rating}, id: hotelId});
     setRating(null);
-    setComment(``);
   };
+
+  useEffect(() => {
+    setComment(``);
+  }, [listLength]);
 
   return (
     <form className="reviews__form form" action="#" method="post" onSubmit={handleFormSubmit}>
@@ -93,6 +97,7 @@ ReviewForm.defaultProps = {
 ReviewForm.propTypes = {
   ratingOptionsLength: PropTypes.number,
   hotelId: PropTypes.number,
+  listLength: PropTypes.number,
 
   onSendReview: PropTypes.func,
 
@@ -104,9 +109,16 @@ ReviewForm.propTypes = {
   })
 };
 
-const mapStateToProps = ({reviews}) => ({
-  pending: reviews.pending
-});
+const mapStateToProps = ({reviews}) => {
+  let listLength = 0;
+  if (reviews && reviews.list && reviews.list.length) {
+    listLength = reviews.list.length;
+  }
+  return {
+    pending: reviews.pending,
+    listLength,
+  };
+};
 
 const mapDispatchToProps = (dispatch) => ({
   onSendReview({params, id}) {

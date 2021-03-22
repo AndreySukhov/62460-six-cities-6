@@ -1,10 +1,10 @@
 import {combineReducers} from 'redux';
 
-import authReducer from './auth/reducers-auth';
-import offerDetailsReducer from './offerDetails/reducers-offerDetails';
-import offersListReducer from './offersList/reducers-offersList';
-import favoritesListReducer from './favoritesList/reducers-favoritesList';
-import reviewsReducer from './reviews/reducers-reviews';
+import authReducer from '../components/sign-in-page/store/reducers';
+import offerDetailsReducer from '../components/offer-details-page/store/reducers';
+import offersListReducer from '../components/offers-list/store/reducers';
+import favoritesListReducer from '../components/favorites-page/store/reducers';
+import reviewsReducer from '../components/reviews-list/store/reducers';
 
 const rootReducer = combineReducers({
   authentication: authReducer,

@@ -1,7 +1,7 @@
-import {ActionTypes} from './actions-auth';
+import {ActionTypes} from './actions';
 
 const defaultState = {
-  status: false,
+  user: null,
   pending: true,
   loginFormPending: false
 };
@@ -13,31 +13,27 @@ const authReducer = (state = defaultState, action) => {
       return {
         ...state,
         pending: true,
-        status: payload,
+        user: payload,
       };
     case ActionTypes.AUTHENTICATION_STATUS_FETCH_SUCCESS:
       return {
         ...state,
         pending: false,
-        status: payload,
+        user: payload,
       };
     case ActionTypes.AUTHENTICATION_SUBMIT_START:
       return {
         ...state,
         loginFormPending: true,
-        status: false,
+        user: null,
       };
     case ActionTypes.AUTHENTICATION_SUBMIT_ERROR:
-      return {
-        ...state,
-        loginFormPending: false,
-        status: false,
-      };
     case ActionTypes.AUTHENTICATION_SUBMIT_SUCCESS:
       return {
         ...state,
         pending: false,
-        status: true,
+        loginFormPending: false,
+        user: payload,
       };
     default:
       return state;

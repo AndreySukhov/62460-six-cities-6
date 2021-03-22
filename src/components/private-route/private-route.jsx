@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 import {Route, Redirect} from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Preloader from '../preloader/preloader';
+import userShape from '../../propTypes/user';
 
 const PrivateRoute = ({authentication, children, path, exact, redirectRoute}) => {
   return (
@@ -13,7 +14,7 @@ const PrivateRoute = ({authentication, children, path, exact, redirectRoute}) =>
         if (authentication.pending) {
           return (<Preloader />);
         }
-        if (authentication.status) {
+        if (authentication.user) {
           return (<>{children}</>);
         }
         return (<Redirect to={redirectRoute} />);
@@ -29,7 +30,7 @@ PrivateRoute.propTypes = {
   exact: PropTypes.bool,
   authentication: PropTypes.shape({
     pending: PropTypes.bool,
-    status: PropTypes.bool,
+    user: userShape,
   }),
 
   children: PropTypes.oneOfType([

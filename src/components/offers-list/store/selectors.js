@@ -1,5 +1,5 @@
 import {createSelector} from 'reselect';
-import {sortManager} from '../../util';
+import {sortOffers} from '../../../util';
 
 const getSortParams = (state) => {
   return state.currentCity.sort;
@@ -33,7 +33,7 @@ const getCurrentCityData = createSelector(
         list: [],
       });
 
-      res.list = sortManager({
+      res.list = sortOffers({
         arr: res.list,
         direction: sortParams.direction,
         sortParam: sortParams.name

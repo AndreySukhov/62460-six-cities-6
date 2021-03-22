@@ -1,9 +1,9 @@
-import {ActionTypes} from './actions-offersList';
-import {CITIES_LIST} from '../../util/constants';
+import {ActionTypes} from './actions';
+import {CITIES_LIST} from '../../../util/constants';
 
 const defaultState = {
   items: [],
-  favTogglePending: false,
+  favoriteTogglePending: false,
   pending: true,
   currentCity: {
     sort: {},
@@ -42,15 +42,15 @@ const offersListReducer = (state = defaultState, action) => {
           sort: payload.sort,
         }
       };
-    case ActionTypes.TOGGLE_FAV_START:
+    case ActionTypes.TOGGLE_FAVORITE_START:
       return {
         ...state,
-        favTogglePending: true,
+        favoriteTogglePending: true,
       };
-    case ActionTypes.TOGGLE_FAV_SUCCESS:
+    case ActionTypes.TOGGLE_FAVORITE_SUCCESS:
       return {
         ...state,
-        favTogglePending: false,
+        favoriteTogglePending: false,
         items: state.items.map((listItem) => {
           if (listItem.id === payload.id) {
             return payload;
