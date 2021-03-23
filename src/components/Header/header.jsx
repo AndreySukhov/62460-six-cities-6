@@ -1,8 +1,8 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {Link} from 'react-router-dom';
 import {connect} from 'react-redux';
 import {ROUTES} from '../../util/constants';
-import userShape from '../../propTypes/user';
 
 const Header = ({user}) => {
   return (
@@ -23,7 +23,7 @@ const Header = ({user}) => {
                   <div className="header__avatar-wrapper user__avatar-wrapper">
                   </div>
                   {user ?
-                    (<span className="header__user-name user__name">{user.email}</span>) :
+                    (<span className="header__user-name user__name">{user}</span>) :
                     (<span className="header__login">Sign in</span>)
                   }
                 </Link>
@@ -37,7 +37,7 @@ const Header = ({user}) => {
 };
 
 Header.propTypes = {
-  user: userShape,
+  user: PropTypes.string,
 };
 
 const mapStateToProps = ({authentication}) => ({

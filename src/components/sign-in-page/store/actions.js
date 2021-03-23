@@ -40,7 +40,7 @@ const ActionCreator = {
         if (res.status === 200) {
           dispatch({
             type: ActionTypes.AUTHENTICATION_SUBMIT_SUCCESS,
-            payload: res.data
+            payload: res.data.email
           });
         }
       } catch (e) {
