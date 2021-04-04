@@ -1,58 +1,36 @@
 import {API_ENDPOITS} from "../../../util/constants";
+import {createAsyncThunk} from '@reduxjs/toolkit';
 
 const ActionTypes = {
-  AUTHENTICATION_SUBMIT_START: `authentication/submitStart`,
-  AUTHENTICATION_SUBMIT_SUCCESS: `authentication/submitSuccess`,
-  AUTHENTICATION_SUBMIT_ERROR: `authentication/submitError`,
+  AUTHENTICATION_SUBMIT: `authentication/submit`,
 
-  AUTHENTICATION_STATUS_FETCH_START: `authenticationStatus/fetchStart`,
-  AUTHENTICATION_STATUS_FETCH_SUCCESS: `authenticationStatus/fetchSuccess`,
+  AUTHENTICATION_STATUS_FETCH: `authenticationStatus/fetch`,
 };
 
 const ActionCreator = {
-  checkAuth: () => {
-    return async (dispatch, _getState, api) => {
-      dispatch({
-        type: ActionTypes.AUTHENTICATION_STATUS_FETCH_START
-      });
-      try {
-        const authRequest = await api.get(API_ENDPOITS.login);
-        dispatch({
-          type: ActionTypes.AUTHENTICATION_STATUS_FETCH_SUCCESS,
-          payload: authRequest.data
-        });
-      } catch (e) {
-        dispatch({
-          type: ActionTypes.AUTHENTICATION_STATUS_FETCH_SUCCESS,
-          payload: null
-        });
-      }
-    };
-  },
-  login: (params) => {
-    return async (dispatch, _getState, api) => {
-      dispatch({
-        type: ActionTypes.AUTHENTICATION_SUBMIT_START
-      });
-
-      try {
-        const res = await api.post(API_ENDPOITS.login, {...params});
-        if (res.status === 200) {
-          dispatch({
-            type: ActionTypes.AUTHENTICATION_SUBMIT_SUCCESS,
-            payload: res.data.email
-          });
+  checkAuth: createAsyncThunk(ActionTypes.AUTHENTICATION_STATUS_FETCH,
+      async (_, thunkAPI) => {
+        const {extra: {api}} = thunkAPI;
+        try {
+          const authRequest = await api.get(API_ENDPOITS.login);
+          return authRequest.data.email;
+        } catch (e) {
+          return null;
         }
-      } catch (e) {
-        // eslint-disable-next-line no-alert
-        alert(e.response.data.error);
-        dispatch({
-          type: ActionTypes.AUTHENTICATION_SUBMIT_ERROR,
-          payload: null
-        });
-      }
-    };
-  },
+      }),
+  login: createAsyncThunk(ActionTypes.AUTHENTICATION_SUBMIT,
+      async (params, thunkAPI) => {
+        const {extra: {api}} = thunkAPI;
+        try {
+          const res = await api.post(API_ENDPOITS.login, {...params});
+
+          return res.data.email;
+        } catch (e) {
+          // eslint-disable-next-line no-alert
+          alert(e.response.data.error);
+          return null;
+        }
+      })
 };
 
 export {

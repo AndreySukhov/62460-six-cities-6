@@ -1,43 +1,44 @@
-import {ActionTypes} from './actions';
+import {createSlice} from '@reduxjs/toolkit';
+import {ActionCreator} from './actions';
 
-const defaultState = {
+const initialState = {
   user: null,
   pending: true,
   loginFormPending: false
 };
 
-const authReducer = (state = defaultState, action) => {
-  const {type, payload} = action;
-  switch (type) {
-    case ActionTypes.AUTHENTICATION_STATUS_FETCH_START:
-      return {
-        ...state,
-        pending: true,
-        user: payload,
-      };
-    case ActionTypes.AUTHENTICATION_STATUS_FETCH_SUCCESS:
-      return {
-        ...state,
-        pending: false,
-        user: payload,
-      };
-    case ActionTypes.AUTHENTICATION_SUBMIT_START:
-      return {
-        ...state,
-        loginFormPending: true,
-        user: null,
-      };
-    case ActionTypes.AUTHENTICATION_SUBMIT_ERROR:
-    case ActionTypes.AUTHENTICATION_SUBMIT_SUCCESS:
-      return {
-        ...state,
-        pending: false,
-        loginFormPending: false,
-        user: payload,
-      };
-    default:
-      return state;
-  }
-};
+const authReducer = createSlice({
+  name: `authReducer`,
+  initialState,
+  extraReducers: ((builder) => {
+    builder.addCase(ActionCreator.checkAuth.pending, (state, action) => {
+      state.pending = true;
+      state.user = action.payload;
+    })
+      .addCase(ActionCreator.checkAuth.fulfilled, (state, action) => {
+        state.pending = false;
+        state.user = action.payload;
+      })
+      .addCase(ActionCreator.checkAuth.rejected, (state, action) => {
+        state.pending = false;
+        state.user = action.payload;
+      })
+      .addCase(ActionCreator.login.pending, (state) => {
+        state.loginFormPending = true;
+        state.user = null;
+      })
+      .addCase(ActionCreator.login.fulfilled, (state, action) => {
+        state.pending = false;
+        state.loginFormPending = null;
+        state.user = action.payload;
+      })
+      .addCase(ActionCreator.login.rejected, (state, action) => {
+        state.pending = false;
+        state.loginFormPending = null;
+        state.user = action.payload;
+      })
+      .addDefaultCase((state) => state);
+  })
+});
 
 export default authReducer;

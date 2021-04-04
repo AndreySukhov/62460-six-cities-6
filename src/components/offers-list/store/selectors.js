@@ -32,13 +32,11 @@ const getCurrentCityData = createSelector(
         locations: [],
         list: [],
       });
-
       res.list = sortOffers({
         arr: res.list,
         direction: sortParams.direction,
         sortParam: sortParams.name
       });
-
       return res;
     }
 );

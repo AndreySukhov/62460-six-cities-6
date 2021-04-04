@@ -1,69 +1,53 @@
-import {ActionTypes} from './actions';
+import {createSlice} from '@reduxjs/toolkit';
+import {ActionCreator} from './actions';
 
-const defaultState = {
+const initialState = {
   pending: true,
   data: null,
   nearby: [],
-  reviewFormPending: false,
   favoriteTogglePending: false,
   reviews: [],
 };
 
-const offerDetailsReducer = (state = defaultState, action) => {
-  const {type, payload} = action;
-  switch (type) {
-    case ActionTypes.OFFER_DETAILS_FETCH_START:
-      return {
-        ...state,
-        pending: true,
-        data: null
-      };
-    case ActionTypes.OFFER_DETAILS_FETCH_SUCCESS:
-      return {
-        ...state,
-        pending: false,
-        data: payload
-      };
-    case ActionTypes.OFFER_DETAILS_FETCH_ERROR:
-      return {
-        ...state,
-        pending: false,
-        data: null
-      };
-    case ActionTypes.OFFER_DETAILS_NEARBY_FETCH_START: {
-      return {
-        ...state,
-        nearby: []
-      };
-    }
-    case ActionTypes.OFFER_DETAILS_NEARBY_FETCH_SUCCESS: {
-      return {
-        ...state,
-        nearby: payload,
-      };
-    }
-    case ActionTypes.TOGGLE_FAVORITE_SUCCESS_PAGE: {
-      return {
-        ...state,
-        favoriteTogglePending: false,
-        data: payload
-      };
-    }
-    case ActionTypes.TOGGLE_FAVORITE_SUCCESS_CARD: {
-      return {
-        ...state,
-        favoriteTogglePending: false,
-        nearby: state.nearby.map((listItem) => {
-          if (listItem.id === payload.id) {
+const offerDetailsReducer = createSlice({
+  initialState,
+  name: `offerDetailsReducer`,
+  extraReducers: (builder) => {
+    builder.addCase(ActionCreator.fetchOfferDetails.pending, (state) => {
+      state.pending = true;
+      state.data = null;
+    }).addCase(ActionCreator.fetchOfferDetails.fulfilled, (state, action) => {
+      state.pending = false;
+      state.data = action.payload;
+    }).addCase(ActionCreator.fetchOfferDetails.rejected, (state, action) => {
+      state.pending = false;
+      state.data = action.payload;
+    }).addCase(ActionCreator.fetchOfferDetailsNearby.pending, (state) => {
+      state.nearby = [];
+    }).addCase(ActionCreator.fetchOfferDetailsNearby.fulfilled, (state, action) => {
+      state.nearby = action.payload;
+    }).addCase(ActionCreator.fetchOfferDetailsNearby.rejected, (state, action) => {
+      state.pending = false;
+      state.data = action.payload;
+    }).addCase(ActionCreator.toggleFavorite.pending, (state) => {
+      state.favoriteTogglePending = true;
+    }).addCase(ActionCreator.toggleFavorite.fulfilled, (state, action) => {
+      const {payload} = action;
+      state.favoriteTogglePending = false;
+      if (payload.place === `page`) {
+        state.data = payload.data;
+      } else if (state.data === `card`) {
+        state.nearby = state.nearby.map((listItem) => {
+          if (listItem.id === payload.data.id) {
             return payload;
           }
           return listItem;
-        })
-      };
-    }
-    default:
-      return state;
-  }
-};
+        });
+      }
+    })
+      .addDefaultCase((state) => state);
+  },
+});
+
 
 export default offerDetailsReducer;

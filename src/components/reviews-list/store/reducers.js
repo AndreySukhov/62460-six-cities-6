@@ -1,47 +1,33 @@
-import {ActionTypes} from './actions';
+import {createSlice} from '@reduxjs/toolkit';
+import {ActionCreator} from './actions';
 
-const defaultState = {
+const initialState = {
   formPending: false,
   pending: true,
   list: [],
 };
 
-const reviewsReducer = (state = defaultState, action) => {
-  const {type, payload} = action;
-  switch (type) {
-    case ActionTypes.REVIEWS_FETCH_START:
-      return {
-        ...state,
-        pending: true,
-        list: [],
-      };
-    case ActionTypes.REVIEWS_FETCH_SUCCESS: {
-      return {
-        ...state,
-        pending: false,
-        list: payload,
-      };
-    }
-    case ActionTypes.REVIEW_POST_START: {
-      return {
-        ...state,
-        formPending: true,
-      };
-    }
-    case ActionTypes.REVIEW_POST_SUCCESS:
-      return {
-        ...state,
-        formPending: false,
-        list: payload,
-      };
-    case ActionTypes.REVIEW_POST_ERROR:
-      return {
-        ...state,
-        formPending: false,
-      };
-    default:
-      return state;
+const reviewsReducer = createSlice({
+  name: `reviewsReducer`,
+  initialState,
+  extraReducers: (builder) => {
+    builder.addCase(ActionCreator.fetchReviews.pending, (state) => {
+      state.pending = true;
+      state.list = [];
+    }).
+    addCase(ActionCreator.fetchReviews.fulfilled, (state, action) => {
+      state.pending = false;
+      state.list = action.payload;
+    }).
+    addCase(ActionCreator.sendReview.pending, (state) => {
+      state.formPending = true;
+    }).addCase(ActionCreator.sendReview.fulfilled, (state, action) => {
+      state.formPending = false;
+      state.list = action.payload;
+    }).addCase(ActionCreator.sendReview.rejected, (state) => {
+      state.formPending = false;
+    }).addDefaultCase((state) => state);
   }
-};
+});
 
 export default reviewsReducer;

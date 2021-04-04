@@ -1,42 +1,30 @@
-import {ActionTypes} from './actions';
+import {createSlice} from '@reduxjs/toolkit';
+import {ActionCreator} from './actions';
 
-const defaultState = {
+const initialState = {
   pending: true,
   favoriteTogglePending: false,
   data: []
 };
 
-const favoritesListReducer = (state = defaultState, action) => {
-  const {type, payload} = action;
-  switch (type) {
-    case ActionTypes.FAVORITES_LIST_FETCH_START: {
-      return {
-        ...state,
-        pending: true,
-      };
-    }
-    case ActionTypes.FAVORITES_LIST_FETCH_SUCCESS: {
-      return {
-        ...state,
-        data: payload,
-        pending: false,
-      };
-    }
-    case ActionTypes.TOGGLE_FAVORITE_START:
-      return {
-        ...state,
-        favoriteTogglePending: true,
-      };
-    case ActionTypes.TOGGLE_FAVORITE_SUCCESS:
-      return {
-        favoriteTogglePending: false,
-        data: state.data.filter((place) => {
-          return place.id !== payload.id;
-        })
-      };
-    default:
-      return state;
-  }
-};
+const favoritesListReducer = createSlice({
+  name: `favoritesListReducer`,
+  initialState,
+  extraReducers: (builder) => {
+    builder.addCase(ActionCreator.fetchFavoritesList.pending, ((state) => {
+      state.pending = true;
+    })).addCase(ActionCreator.fetchFavoritesList.fulfilled, ((state, action) => {
+      state.pending = false;
+      state.data = action.payload;
+    })).addCase(ActionCreator.toggleFavorite.pending, ((state) => {
+      state.favoriteTogglePending = true;
+    })).addCase(ActionCreator.toggleFavorite.fulfilled, ((state, action) => {
+      state.favoriteTogglePending = false;
+      state.data = state.data.filter((place) => {
+        return place.id !== action.payload.id;
+      });
+    })).addDefaultCase((state) => state);
+  },
+});
 
 export default favoritesListReducer;

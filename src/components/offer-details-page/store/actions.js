@@ -1,74 +1,46 @@
+import {createAsyncThunk} from '@reduxjs/toolkit';
+
 import {API_ENDPOITS} from '../../../util/constants';
 import postFavorite from '../../../util/post-favorite';
 
 const ActionTypes = {
-  OFFER_DETAILS_FETCH_START: `offerDetails/fetchDetailsStart`,
-  OFFER_DETAILS_FETCH_SUCCESS: `offerDetails/fetchDetailsSuccess`,
-  OFFER_DETAILS_FETCH_ERROR: `offerDetails/fetchDetailsError`,
+  OFFER_DETAILS_FETCH: `offerDetails/fetchDetails`,
 
-  OFFER_DETAILS_NEARBY_FETCH_START: `offerDetails/fetchDetailsNearbyStart`,
-  OFFER_DETAILS_NEARBY_FETCH_SUCCESS: `offerDetails/fetchDetailsNearbySuccess`,
+  OFFER_DETAILS_NEARBY_FETCH: `offerDetails/fetchDetailsNearby`,
 
-  TOGGLE_FAVORITE_START: `offerDetails/toggleFavoriteStart`,
-  TOGGLE_FAVORITE_SUCCESS_PAGE: `offerDetails/toggleFavoriteSuccessPage`,
-  TOGGLE_FAVORITE_SUCCESS_CARD: `offerDetails/toggleFavoriteSuccessCard`,
-};
-
-const FAVORITE_PLACES = {
-  page: ActionTypes.TOGGLE_FAVORITE_SUCCESS_PAGE,
-  card: ActionTypes.TOGGLE_FAVORITE_SUCCESS_CARD,
+  TOGGLE_FAVORITE: `offerDetails/toggleFavorite`,
 };
 
 const ActionCreator = {
-  fetchOfferDetails: (id) => {
-    return async (dispatch, _getState, api) => {
-      dispatch({
-        type: ActionTypes.OFFER_DETAILS_FETCH_START
-      });
+  fetchOfferDetails: createAsyncThunk(ActionTypes.OFFER_DETAILS_FETCH,
+      async (id, thunkAPI) => {
+        const {extra: {api}} = thunkAPI;
+        try {
+          const offerDetails = await api.get(`${API_ENDPOITS.hotels}/${id}`);
+          return offerDetails.data;
+        } catch (e) {
+          return null;
+        }
+      }),
+  fetchOfferDetailsNearby: createAsyncThunk(ActionTypes.OFFER_DETAILS_NEARBY_FETCH,
+      async (id, thunkAPI) => {
+        const {extra: {api}} = thunkAPI;
+        const offersNearby = await api.get(`${API_ENDPOITS.hotels}/${id}/nearby`);
 
-      try {
-        const offerDetails = await api.get(`${API_ENDPOITS.hotels}/${id}`);
-        dispatch({
-          type: ActionTypes.OFFER_DETAILS_FETCH_SUCCESS,
-          payload: offerDetails.data,
-        });
-      } catch (e) {
-        dispatch({
-          type: ActionTypes.OFFER_DETAILS_FETCH_ERROR,
-        });
-      }
-    };
-  },
-  fetchOfferDetailsNearby: (id) => {
-    return async (dispatch, _getState, api) => {
-      dispatch({
-        type: ActionTypes.OFFER_DETAILS_NEARBY_FETCH_START
-      });
-
-      const offersNearby = await api.get(`${API_ENDPOITS.hotels}/${id}/nearby`);
-      if (offersNearby.status === 200) {
-        dispatch({
-          type: ActionTypes.OFFER_DETAILS_NEARBY_FETCH_SUCCESS,
-          payload: offersNearby.data
-        });
-      }
-    };
-  },
-  toggleFavorite: ({status, id, place}) => {
-    return async (dispatch, _getState, api) => {
-      dispatch({
-        type: ActionTypes.TOGGLE_FAVORITE_START
-      });
-
-      const favoriteRequest = await postFavorite({status, id, api});
-      if (favoriteRequest.status === 200) {
-        dispatch({
-          type: FAVORITE_PLACES[place],
-          payload: favoriteRequest.data
-        });
-      }
-    };
-  },
+        if (offersNearby.status === 200) {
+          return offersNearby.data;
+        }
+        return null;
+      }),
+  toggleFavorite: createAsyncThunk(ActionTypes.TOGGLE_FAVORITE,
+      async ({status, id, place}, thunkAPI) => {
+        const {extra: {api}} = thunkAPI;
+        const favoriteRequest = await postFavorite({status, id, api});
+        return {
+          data: favoriteRequest.data,
+          place
+        };
+      })
 };
 
 export {

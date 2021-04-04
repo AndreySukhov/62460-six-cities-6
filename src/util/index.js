@@ -26,6 +26,7 @@ const sortOffers = ({arr, sortParam, direction}) => {
     asc: `asc`,
     desc: `desc`,
   };
+
   if (!direction || !SORT_DIRECTIONS[direction] || !sortParam) {
     return [...arr];
   }

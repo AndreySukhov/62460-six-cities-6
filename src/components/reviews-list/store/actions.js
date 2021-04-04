@@ -1,55 +1,36 @@
+import {createAsyncThunk} from '@reduxjs/toolkit';
 import {API_ENDPOITS} from "../../../util/constants";
 
 const ActionTypes = {
-  REVIEW_POST_START: `reviews/postStart`,
-  REVIEW_POST_SUCCESS: `reviews/postSuccess`,
-  REVIEW_POST_ERROR: `reviews/postError`,
+  REVIEW_POST: `reviews/post`,
 
-  REVIEWS_FETCH_START: `reviews/fetchStart`,
-  REVIEWS_FETCH_SUCCESS: `reviews/fetchSuccess`,
+  REVIEWS_FETCH: `reviews/fetch`
 };
 
 const ActionCreator = {
-  sendReview: ({params, id}) => {
-    return async (dispatch, _getState, api) => {
-      dispatch({
-        type: ActionTypes.REVIEW_POST_START
-      });
-
-      try {
-        const result = await api.post(`${API_ENDPOITS.comments}/${id}`, {
-          ...params
-        });
-        if (result.status === 200) {
-          dispatch({
-            type: ActionTypes.REVIEW_POST_SUCCESS,
-            payload: result.data,
+  sendReview: createAsyncThunk(ActionTypes.REVIEW_POST,
+      async ({params, id}, thunkAPI) => {
+        const {extra: {api}} = thunkAPI;
+        try {
+          const result = await api.post(`${API_ENDPOITS.comments}/${id}`, {
+            ...params
           });
-        }
-      } catch (e) {
-        // eslint-disable-next-line no-alert
-        alert(e.response.data.error);
-        dispatch({
-          type: ActionTypes.REVIEW_POST_ERROR,
-        });
-      }
-    };
-  },
-  fetchReviews: (id) => {
-    return async (dispatch, _getState, api) => {
-      dispatch({
-        type: ActionTypes.REVIEWS_FETCH_START
-      });
 
-      const reviews = await api.get(`${API_ENDPOITS.comments}/${id}`);
-      if (reviews.status === 200) {
-        dispatch({
-          type: ActionTypes.REVIEWS_FETCH_SUCCESS,
-          payload: reviews.data,
-        });
+          return result.data;
+        } catch (e) {
+        // eslint-disable-next-line no-alert
+          alert(e.response.data.error);
+          return null;
+        }
+      }),
+  fetchReviews: createAsyncThunk(ActionTypes.REVIEWS_FETCH,
+      async (id, thunkAPI) => {
+        const {extra: {api}} = thunkAPI;
+
+        const reviews = await api.get(`${API_ENDPOITS.comments}/${id}`);
+        return reviews.data;
       }
-    };
-  },
+  ),
 };
 
 export {

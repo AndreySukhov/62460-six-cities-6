@@ -1,9 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {createStore, applyMiddleware} from 'redux';
+import {configureStore} from '@reduxjs/toolkit';
 import {Provider} from 'react-redux';
-import {composeWithDevTools} from 'redux-devtools-extension';
-import thunk from 'redux-thunk';
 
 import rootReducer from './store/root-reducer';
 import {ActionCreator} from './components/sign-in-page/store/actions';
@@ -14,10 +12,17 @@ import App from './components/app/app';
 
 const api = createApi();
 
-const store = createStore(
-    rootReducer,
-    composeWithDevTools(applyMiddleware(thunk.withExtraArgument(api))),
-);
+const store = configureStore({
+  reducer: rootReducer,
+  middleware: (getDefaultMiddleware) => {
+    return getDefaultMiddleware({
+      thunk: {
+        extraArgument: {api}
+      },
+    });
+  }
+});
+
 
 store.dispatch(ActionCreator.checkAuth());
 

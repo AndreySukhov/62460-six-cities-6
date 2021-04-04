@@ -7,11 +7,11 @@ import favoritesListReducer from '../components/favorites-page/store/reducers';
 import reviewsReducer from '../components/reviews-list/store/reducers';
 
 const rootReducer = combineReducers({
-  authentication: authReducer,
-  offerDetails: offerDetailsReducer,
-  offersList: offersListReducer,
-  favoritesList: favoritesListReducer,
-  reviews: reviewsReducer,
+  authentication: authReducer.reducer,
+  offerDetails: offerDetailsReducer.reducer,
+  offersList: offersListReducer.reducer,
+  favoritesList: favoritesListReducer.reducer,
+  reviews: reviewsReducer.reducer,
 });
 
 export default rootReducer;
